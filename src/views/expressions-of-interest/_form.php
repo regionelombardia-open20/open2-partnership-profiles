@@ -148,8 +148,7 @@ $onlyOneOrganization = $module->enableOnlyOneOrganization;
         'workflowId' => ExpressionsOfInterest::EXPRESSIONS_OF_INTEREST_WORKFLOW,
         'viewWidgetOnNewRecord' => true,
         //'closeSaveButtonWidget' => CloseSaveButtonWidget::widget($config),
-        'closeButton' => Html::a(Module::t('amospartnershipprofiles', 'Annulla'), \Yii::$app->session->get('previousUrl'),
-            ['class' => 'btn btn-secondary']),
+        'closeButton' => Html::a(Module::t('amospartnershipprofiles', 'Annulla'), \Yii::$app->session->get('previousUrl'), ['class' => 'btn btn-secondary']),
         'initialStatusName' => "DRAFT",
         'initialStatus' => ExpressionsOfInterest::EXPRESSIONS_OF_INTEREST_WORKFLOW_STATUS_DRAFT,
         'statusToRender' => $statusToRenderToHide['statusToRender'],
@@ -160,13 +159,11 @@ $onlyOneOrganization = $module->enableOnlyOneOrganization;
                 'description' => 'le modifiche e mantieni la notizia in "richiesta di pubblicazione"'
             ],
             ExpressionsOfInterest::EXPRESSIONS_OF_INTEREST_WORKFLOW_STATUS_RELEVANT => [
-                'button' => \open20\amos\core\helpers\Html::submitButton(Module::t('amospartnershipprofiles', 'Salva'),
-                    ['class' => 'btn btn-workflow']),
+                'button' => \open20\amos\core\helpers\Html::submitButton(Module::t('amospartnershipprofiles', 'Salva'), ['class' => 'btn btn-workflow']),
                 'description' => Module::t('amospartnershipprofiles', 'le modifiche e mantieni la soluzione "pubblicata"'),
             ],
             'default' => [
-                'button' => Html::submitButton(Module::t('amospartnershipprofiles', 'Salva in bozza'),
-                    ['class' => 'btn btn-workflow']),
+                'button' => Html::submitButton(Module::t('amospartnershipprofiles', 'Salva in bozza'), ['class' => 'btn btn-workflow']),
                 'description' => Module::t('amospartnershipprofiles', 'potrai richiedere la pubblicazione in seguito'),
             ]
         ]

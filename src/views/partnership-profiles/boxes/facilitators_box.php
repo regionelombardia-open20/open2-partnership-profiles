@@ -38,9 +38,9 @@ use kartik\alert\Alert;
         ?>
         <div class="col-xs-12 facilitator-content">
             <div class="col-xs-12 facilitator-textarea">
-                <h4><strong><?= Module::t('amospartnershipprofiles', 'Facilitator') ?></strong></h4>
-                <p><?= Module::t('amospartnershipprofiles', 'The facilitator is a user with an in-depth knowledge of the platform\'s objectives and methodology and is responsible for providing assistance to users.') ?></p>
-                <p><?= Module::t('amospartnershipprofiles', 'You can contact the facilitator at any time for informations on compiling of the partnership profile.') ?></p>
+                <h4><strong><?= Module::t('amospartnershipprofiles', '#facilitator_box_facilitator') ?></strong></h4>
+                <p><?= Module::t('amospartnershipprofiles', '#facilitator_box_facilitator_description_1') ?></p>
+                <p><?= Module::t('amospartnershipprofiles', '#facilitator_box_facilitator_description_2') ?></p>
             </div>
             <div class="clearfix"></div>
             <div class="col-xs-12">
@@ -73,7 +73,7 @@ use kartik\alert\Alert;
                             <?= AmosIcons::show('info') ?>
                         </div>
                         <div class="col-xs-11">
-                            <?= Module::t('amospartnershipprofiles', 'The platform has automatically assigned you the facilitator you have selected in your profile. If you wish, you can change it by choosing one another from the facilitators list by clicking on "Change facilitator".') ?>
+                            <?= Module::t('amospartnershipprofiles', '#facilitator_box_auto_facilitator') ?>
                         </div>
                     </div>
                 <?php endif; ?>

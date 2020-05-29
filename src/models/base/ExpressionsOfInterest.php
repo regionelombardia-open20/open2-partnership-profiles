@@ -42,6 +42,20 @@ use yii\helpers\ArrayHelper;
 class ExpressionsOfInterest extends AmosRecordAudit
 {
     /**
+     * @var Module $partnerProfModule
+     */
+    public $partnerProfModule = null;
+
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        parent::init();
+        $this->partnerProfModule = Module::instance();
+    }
+
+    /**
      * @inheritdoc
      */
     public static function tableName()
@@ -80,7 +94,7 @@ class ExpressionsOfInterest extends AmosRecordAudit
                 'deleted_at'
             ], 'safe'],
             [['status'], 'string', 'max' => 255],
-            [['partnership_profile_id'], 'exist', 'skipOnError' => true, 'targetClass' => \open20\amos\partnershipprofiles\models\PartnershipProfiles::className(), 'targetAttribute' => ['partnership_profile_id' => 'id']],
+            [['partnership_profile_id'], 'exist', 'skipOnError' => true, 'targetClass' => $this->partnerProfModule->model('PartnershipProfiles'), 'targetAttribute' => ['partnership_profile_id' => 'id']],
         ];
         return $rules;
     }
@@ -112,6 +126,6 @@ class ExpressionsOfInterest extends AmosRecordAudit
      */
     public function getPartnershipProfile()
     {
-        return $this->hasOne(\open20\amos\partnershipprofiles\models\PartnershipProfiles::className(), ['id' => 'partnership_profile_id']);
+        return $this->hasOne($this->partnerProfModule->model('PartnershipProfiles'), ['id' => 'partnership_profile_id']);
     }
 }

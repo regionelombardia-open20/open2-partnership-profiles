@@ -52,7 +52,7 @@ use yii\helpers\Url;
  *
  * @package open20\amos\partnershipprofiles\models
  */
-class PartnershipProfiles extends \open20\amos\partnershipprofiles\models\base\PartnershipProfiles implements ContentModelInterface, ViewModelInterface, FacilitatorInterface
+class PartnershipProfiles extends \open20\amos\partnershipprofiles\models\base\PartnershipProfiles implements ViewModelInterface, FacilitatorInterface
 {
     const PARTNERSHIP_PROFILES_WORKFLOW = 'PartnershipProfilesWorkflow';
     const PARTNERSHIP_PROFILES_WORKFLOW_STATUS_DRAFT = 'PartnershipProfilesWorkflow/DRAFT';
@@ -315,7 +315,12 @@ class PartnershipProfiles extends \open20\amos\partnershipprofiles\models\base\P
      */
     public function expressionOfInterestAllowed($allowedPartnershipProfileIds = null)
     {
-        if (!is_null($allowedPartnershipProfileIds) && !in_array($this->id, $allowedPartnershipProfileIds)) {
+        $user = \Yii::$app->getUser();
+		$userProfileClass = \open20\amos\admin\AmosAdmin::instance()->createModel('UserProfile');
+		$userProfile = $userProfileClass::findOne(['user_id' => $user->id]);
+        $validatedUser = $userProfile->validato_almeno_una_volta;
+
+        if (!$validatedUser || (!is_null($allowedPartnershipProfileIds) && !in_array($this->id, $allowedPartnershipProfileIds))) {
             return false;
         }
         $ok = (

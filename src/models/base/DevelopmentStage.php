@@ -81,6 +81,6 @@ class DevelopmentStage extends Record
      */
     public function getPartnershipProfiles()
     {
-        return $this->hasMany(\open20\amos\partnershipprofiles\models\PartnershipProfiles::className(), ['development_stage_id' => 'id']);
+        return $this->hasMany(Module::instance()->model('PartnershipProfiles'), ['development_stage_id' => 'id']);
     }
 }

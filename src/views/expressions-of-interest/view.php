@@ -10,14 +10,13 @@
  */
 
 use open20\amos\core\forms\ActiveForm;
-use open20\amos\core\forms\CloseButtonWidget;
 use open20\amos\core\forms\ContextMenuWidget;
+use open20\amos\core\helpers\Html;
 use open20\amos\partnershipprofiles\controllers\ExpressionsOfInterestController;
 use open20\amos\partnershipprofiles\models\ExpressionsOfInterest;
-use open20\amos\workflow\widgets\WorkflowTransitionButtonsWidget;
 use open20\amos\partnershipprofiles\Module;
+use open20\amos\workflow\widgets\WorkflowTransitionButtonsWidget;
 use yii\widgets\DetailView;
-use open20\amos\core\helpers\Html;
 
 /**
  * @var yii\web\View $this
@@ -44,13 +43,13 @@ $appController = Yii::$app->controller;
 ]);
 ?>
 <?php
-    if($model->status != ExpressionsOfInterest::EXPRESSIONS_OF_INTEREST_WORKFLOW_STATUS_RELEVANT) {
-        echo \open20\amos\workflow\widgets\WorkflowTransitionStateDescriptorWidget::widget([
-            'model' => $model,
-            'workflowId' => ExpressionsOfInterest::EXPRESSIONS_OF_INTEREST_WORKFLOW,
-            'classDivMessage' => 'message'
-        ]);
-    }
+if ($model->status != ExpressionsOfInterest::EXPRESSIONS_OF_INTEREST_WORKFLOW_STATUS_RELEVANT) {
+    echo \open20\amos\workflow\widgets\WorkflowTransitionStateDescriptorWidget::widget([
+        'model' => $model,
+        'workflowId' => ExpressionsOfInterest::EXPRESSIONS_OF_INTEREST_WORKFLOW,
+        'classDivMessage' => 'message'
+    ]);
+}
 ?>
 
 <div class="<?= Yii::$app->controller->id ?>-view col-xs-12">
@@ -90,40 +89,14 @@ $appController = Yii::$app->controller;
             ]
         ]
     ]) ?>
-
-<?php
-    $statusToRenderToHide = $model->getStatusToRenderToHide();
-?>
-
-<?= WorkflowTransitionButtonsWidget::widget([
-        'inView' => true,
+    <?= WorkflowTransitionButtonsWidget::widget([
         'form' => $form,
         'model' => $model,
         'workflowId' => ExpressionsOfInterest::EXPRESSIONS_OF_INTEREST_WORKFLOW,
         'viewWidgetOnNewRecord' => true,
-        //'closeSaveButtonWidget' => CloseSaveButtonWidget::widget($config),
         'closeButton' => Html::a(Module::t('amospartnershipprofiles', 'Annulla'), $appController->getViewCloseUrl(), ['class' => 'btn btn-secondary']),
         'initialStatusName' => "DRAFT",
         'initialStatus' => ExpressionsOfInterest::EXPRESSIONS_OF_INTEREST_WORKFLOW_STATUS_DRAFT,
-        'statusToRender' => $statusToRenderToHide['statusToRender'],
-        'hideSaveDraftStatus' => $statusToRenderToHide['hideDraftStatus'],
-        'draftButtons' => [
-            ExpressionsOfInterest::EXPRESSIONS_OF_INTEREST_WORKFLOW_STATUS_TOVALIDATE => [
-                'button' => Html::submitButton(Module::t('amospartnershipprofiles', 'Salva'), ['class' => 'btn btn-workflow']),
-                'description' => 'le modifiche e mantieni la notizia in "richiesta di pubblicazione"'
-            ],
-            ExpressionsOfInterest::EXPRESSIONS_OF_INTEREST_WORKFLOW_STATUS_RELEVANT => [
-                'button' => \open20\amos\core\helpers\Html::submitButton(Module::t('amospartnershipprofiles', 'Salva'),
-                    ['class' => 'btn btn-workflow']),
-                'description' => Module::t('amospartnershipprofiles', 'le modifiche e mantieni la soluzione "pubblicata"'),
-            ],
-            'default' => [
-                'button' => Html::submitButton(Module::t('amospartnershipprofiles', 'Salva in bozza'),
-                    ['class' => 'btn btn-workflow']),
-                'description' => Module::t('amospartnershipprofiles', 'potrai richiedere la pubblicazione in seguito'),
-            ]
-        ]
-    ]);
-    ?>
+    ]); ?>
     <?php ActiveForm::end(); ?>
 </div>

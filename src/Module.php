@@ -14,6 +14,7 @@ namespace open20\amos\partnershipprofiles;
 use open20\amos\core\interfaces\SearchModuleInterface;
 use open20\amos\core\module\AmosModule;
 use open20\amos\core\module\ModuleInterface;
+use open20\amos\core\widget\WidgetAbstract;
 use open20\amos\partnershipprofiles\widgets\icons\WidgetIconExpressionsOfInterestAllAdmin;
 use open20\amos\partnershipprofiles\widgets\icons\WidgetIconExpressionsOfInterestCreatedBy;
 use open20\amos\partnershipprofiles\widgets\icons\WidgetIconExpressionsOfInterestDashboard;
@@ -150,6 +151,11 @@ class Module extends AmosModule implements ModuleInterface, SearchModuleInterfac
     public $hideAdminsInPartProfFacilitatorSelection = false;
 
     /**
+     * @var string $pluginCustomIcon
+     */
+    public $pluginCustomIcon = '';
+
+    /**
      * @return string
      */
     public static function getModuleName()
@@ -164,7 +170,14 @@ class Module extends AmosModule implements ModuleInterface, SearchModuleInterfac
 
     public static function getModuleIconName()
     {
-        return 'partnership-profiles';
+        $customIcon = Module::instance()->pluginCustomIcon;
+        if (strlen($customIcon) > 0) {
+            return $customIcon;
+        } else if (!empty(\Yii::$app->params['dashboardEngine']) && \Yii::$app->params['dashboardEngine'] == WidgetAbstract::ENGINE_ROWS) {
+            return 'propostecollaborazione';
+        } else {
+            return 'partnership-profiles';
+        }
     }
 
     /**

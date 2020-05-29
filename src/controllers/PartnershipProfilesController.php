@@ -29,7 +29,6 @@ use open20\amos\partnershipprofiles\widgets\icons\WidgetIconPartnerProfExprOfInt
 use raoul2000\workflow\base\WorkflowException;
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
 use yii\data\ArrayDataProvider;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
@@ -65,7 +64,7 @@ class PartnershipProfilesController extends \open20\amos\partnershipprofiles\con
 
         parent::init();
 
-        $this->setStartObjClassName(PartnershipProfiles::className());
+        $this->setStartObjClassName($this->partnerProfModule->model('PartnershipProfiles'));
         $this->setTargetObjClassName(UserProfile::className());
         $this->setRedirectAction('update');
         $this->on(M2MEventsEnum::EVENT_BEFORE_ASSOCIATE_ONE2MANY, [$this, 'beforeAssociateOneToMany']);
@@ -471,7 +470,9 @@ class PartnershipProfilesController extends \open20\amos\partnershipprofiles\con
      */
     public function actionValidate($id)
     {
-        $partnership = PartnershipProfiles::findOne($id);
+        /** @var PartnershipProfiles $partnershipProfilesModel */
+        $partnershipProfilesModel = $this->partnerProfModule->createModel('PartnershipProfiles');
+        $partnership = $partnershipProfilesModel::findOne($id);
         try {
             $partnership->sendToStatus(PartnershipProfiles::PARTNERSHIP_PROFILES_WORKFLOW_STATUS_VALIDATED);
             $ok = $partnership->save(false);
@@ -493,7 +494,9 @@ class PartnershipProfilesController extends \open20\amos\partnershipprofiles\con
      */
     public function actionReject($id)
     {
-        $partnership = PartnershipProfiles::findOne($id);
+        /** @var PartnershipProfiles $partnershipProfilesModel */
+        $partnershipProfilesModel = $this->partnerProfModule->createModel('PartnershipProfiles');
+        $partnership = $partnershipProfilesModel::findOne($id);
         try {
             $partnership->sendToStatus(PartnershipProfiles::PARTNERSHIP_PROFILES_WORKFLOW_STATUS_DRAFT);
             $ok = $partnership->save(false);

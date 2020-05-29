@@ -27,7 +27,6 @@ use open20\amos\partnershipprofiles\Module;
 use open20\amos\tag\models\EntitysTagsMm;
 use yii\base\InvalidConfigException;
 use yii\base\BaseObject;
-use yii\db\Query;
 use yii\helpers\ArrayHelper;
 use yii\log\Logger;
 
@@ -200,7 +199,7 @@ class PartnershipProfilesUtility extends BaseObject
     public static function duplicatePartnershipProfilesTagForCommunity($model)
     {
         $eventTags = EntitysTagsMm::findAll([
-            'classname' => PartnershipProfiles::className(),
+            'classname' => Module::instance()->model('PartnershipProfiles'),
             'record_id' => $model->id
         ]);
         $ok = true;
@@ -273,7 +272,8 @@ class PartnershipProfilesUtility extends BaseObject
      */
     public static function getOwnInterestPartnershipProfiles($onlyIds = false)
     {
-        $partnershipProfileSearch = new PartnershipProfilesSearch();
+        /** @var PartnershipProfilesSearch $partnershipProfileSearch */
+        $partnershipProfileSearch = Module::instance()->createModel('PartnershipProfilesSearch');
         $query = $partnershipProfileSearch->searchQuery(\Yii::$app->request->getQueryParams());
         $ownInterestPartnershipProfiles = $query->all();
 

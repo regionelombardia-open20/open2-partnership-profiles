@@ -24,7 +24,6 @@ use yii\data\ActiveDataProvider;
 use yii\db\ActiveQuery;
 use yii\di\Container;
 use yii\helpers\ArrayHelper;
-use Yii;
 use yii\data\Pagination;
 
 /**
@@ -77,7 +76,7 @@ class PartnershipProfilesSearch extends PartnershipProfiles implements SearchMod
         $notify = $this->getNotifier();
         if ($notify) {
             /** @var \open20\amos\notificationmanager\AmosNotify $notify */
-            $notify->notificationOff(\Yii::$app->getUser()->id, PartnershipProfiles::className(), $query, NotificationChannels::CHANNEL_READ);
+            $notify->notificationOff(\Yii::$app->getUser()->id, $this->partnerProfModule->model('PartnershipProfiles'), $query, NotificationChannels::CHANNEL_READ);
         }
     }
 
@@ -140,7 +139,7 @@ class PartnershipProfilesSearch extends PartnershipProfiles implements SearchMod
         $behaviors = [];
         // If the parent model PartnershipProfiles is a model enabled for tags, PartnershipProfilesSearch will have TaggableBehavior too
         $moduleTag = \Yii::$app->getModule('tag');
-        if (isset($moduleTag) && in_array(PartnershipProfiles::className(), $moduleTag->modelsEnabled) && $moduleTag->behaviors) {
+        if (isset($moduleTag) && in_array($this->partnerProfModule->model('PartnershipProfiles'), $moduleTag->modelsEnabled) && $moduleTag->behaviors) {
             $behaviors = ArrayHelper::merge($moduleTag->behaviors, $behaviors);
         }
 
@@ -154,8 +153,11 @@ class PartnershipProfilesSearch extends PartnershipProfiles implements SearchMod
      */
     public function baseSearch($params)
     {
+        /** @var PartnershipProfiles $partnershipProfilesModel */
+        $partnershipProfilesModel = $this->partnerProfModule->createModel('PartnershipProfiles');
+
         /** @var ActiveQuery $query */
-        $query = PartnershipProfiles::find()->distinct();
+        $query = $partnershipProfilesModel::find()->distinct();
 
         $query->joinWith('partnershipProfilesTypesMms');
         $query->joinWith('workLanguage');
@@ -182,7 +184,8 @@ class PartnershipProfilesSearch extends PartnershipProfiles implements SearchMod
     protected function addSearchByTagsQueryPart($query, $params)
     {
         $moduleTag = \Yii::$app->getModule('tag');
-        if (isset($moduleTag) && in_array(PartnershipProfiles::className(), $moduleTag->modelsEnabled) && $moduleTag->behaviors) {
+        $partnershipProfilesClassname = $this->partnerProfModule->model('PartnershipProfiles');
+        if (isset($moduleTag) && in_array($partnershipProfilesClassname, $moduleTag->modelsEnabled) && $moduleTag->behaviors) {
             if (isset($params[$this->formName()]['tagValues'])) {
                 $tagValues = $params[$this->formName()]['tagValues'];
                 $this->setTagValues($tagValues);
@@ -193,7 +196,7 @@ class PartnershipProfilesSearch extends PartnershipProfiles implements SearchMod
                         if (!empty($tagId)) {
                             if ($i == 0) {
                                 $query->innerJoin(EntitysTagsMm::tableName() . ' entities_tag',
-                                    "entities_tag.classname = '" . addslashes(PartnershipProfiles::className()) . "' AND entities_tag.record_id = " . PartnershipProfiles::tableName() . ".id");
+                                    "entities_tag.classname = '" . addslashes($partnershipProfilesClassname) . "' AND entities_tag.record_id = " . PartnershipProfiles::tableName() . ".id");
                             } else {
                                 $andWhere .= " OR ";
                             }
@@ -254,7 +257,7 @@ class PartnershipProfilesSearch extends PartnershipProfiles implements SearchMod
     public function searchQuery($params)
     {
         $query = $this->baseSearch($params);
-        $classname = PartnershipProfiles::className();
+        $classname = $this->partnerProfModule->model('PartnershipProfiles');
         $moduleCwh = \Yii::$app->getModule('cwh');
         $cwhActiveQuery = null;
 
@@ -281,7 +284,7 @@ class PartnershipProfilesSearch extends PartnershipProfiles implements SearchMod
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\di\NotInstantiableException
      */
-    public function search($params)
+    public function search($params, $queryType = null, $limit = null, $onlyDrafts = false)
     {
         $query = $this->searchQuery($params);
         $dataProvider = new ActiveDataProvider([
@@ -307,7 +310,7 @@ class PartnershipProfilesSearch extends PartnershipProfiles implements SearchMod
     public function searchAllQuery($params)
     {
         $query = $this->baseSearch($params);
-        $classname = PartnershipProfiles::className();
+        $classname = $this->partnerProfModule->model('PartnershipProfiles');
         $moduleCwh = \Yii::$app->getModule('cwh');
         $cwhActiveQuery = null;
         if (isset($moduleCwh)) {
@@ -333,7 +336,7 @@ class PartnershipProfilesSearch extends PartnershipProfiles implements SearchMod
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\di\NotInstantiableException
      */
-    public function searchAll($params)
+    public function searchAll($params, $limit = null)
     {
         $query = $this->searchAllQuery($params);
         $dataProvider = new ActiveDataProvider([
@@ -357,8 +360,11 @@ class PartnershipProfilesSearch extends PartnershipProfiles implements SearchMod
      */
     public function searchAllAdminQuery()
     {
+        /** @var PartnershipProfiles $partnershipProfilesModel */
+        $partnershipProfilesModel = $this->partnerProfModule->createModel('PartnershipProfiles');
+
         /** @var ActiveQuery $query */
-        $query = PartnershipProfiles::find()->distinct();
+        $query = $partnershipProfilesModel::find()->distinct();
         $query->joinWith('partnershipProfilesTypesMms');
         $query->joinWith('workLanguage');
         $query->joinWith('developmentStage');
@@ -372,7 +378,7 @@ class PartnershipProfilesSearch extends PartnershipProfiles implements SearchMod
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\di\NotInstantiableException
      */
-    public function searchAllAdmin($params)
+    public function searchAllAdmin($params, $limit = null)
     {
         $query = $this->searchAllAdminQuery();
 
@@ -405,7 +411,7 @@ class PartnershipProfilesSearch extends PartnershipProfiles implements SearchMod
     public function searchCreatedByQuery($params)
     {
         $query = $this->baseSearch($params);
-        $classname = PartnershipProfiles::className();
+        $classname = $this->partnerProfModule->model('PartnershipProfiles');
         $moduleCwh = \Yii::$app->getModule('cwh');
         $cwhActiveQuery = null;
         if (isset($moduleCwh)) {
@@ -458,7 +464,7 @@ class PartnershipProfilesSearch extends PartnershipProfiles implements SearchMod
     public function searchToValidateQuery($params)
     {
         $query = $this->baseSearch($params);
-        $classname = PartnershipProfiles::className();
+        $classname = $this->partnerProfModule->model('PartnershipProfiles');
         $moduleCwh = \Yii::$app->getModule('cwh');
         $cwhActiveQuery = null;
 
@@ -664,7 +670,7 @@ class PartnershipProfilesSearch extends PartnershipProfiles implements SearchMod
         
         // Verifico se il modulo supporta i TAG e, in caso, ricerco anche fra quelli
         $moduleTag = \Yii::$app->getModule('tag');
-        $enableTagSearch = isset($moduleTag) && in_array(PartnershipProfiles::className(), $moduleTag->modelsEnabled);
+        $enableTagSearch = isset($moduleTag) && in_array($this->partnerProfModule->model('PartnershipProfiles'), $moduleTag->modelsEnabled);
 
         if ($enableTagSearch) {
             $dataProvider->query->leftJoin('entitys_tags_mm e_tag', "e_tag.record_id=" . PartnershipProfiles::tableName() . ".id AND e_tag.deleted_at IS NULL AND e_tag.classname='" . addslashes(PartnershipProfiles::className()) . "'");

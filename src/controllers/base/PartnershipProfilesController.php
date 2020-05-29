@@ -20,7 +20,6 @@ use open20\amos\dashboard\controllers\TabDashboardControllerTrait;
 use open20\amos\partnershipprofiles\models\PartnershipProfiles;
 use open20\amos\partnershipprofiles\models\PartnershipProfilesCountriesMm;
 use open20\amos\partnershipprofiles\models\PartnershipProfilesTypesMm;
-use open20\amos\partnershipprofiles\models\search\PartnershipProfilesSearch;
 use open20\amos\partnershipprofiles\Module;
 use open20\amos\partnershipprofiles\utility\PartnershipProfilesUtility;
 use open20\amos\partnershipprofiles\widgets\icons\WidgetIconPartnershipProfilesDashboard;
@@ -58,8 +57,8 @@ class PartnershipProfilesController extends CrudController
 
         $this->initDashboardTrait();
 
-        $this->setModelObj(new PartnershipProfiles());
-        $this->setModelSearch(new PartnershipProfilesSearch());
+        $this->setModelObj($this->partnerProfModule->createModel('PartnershipProfiles'));
+        $this->setModelSearch($this->partnerProfModule->createModel('PartnershipProfilesSearch'));
 
         $this->viewList = [
             'name' => 'list',
@@ -211,8 +210,6 @@ class PartnershipProfilesController extends CrudController
     {
         $allOk = true;
         if (!empty($attrMmPost) && is_array($attrMmPost)) {
-            /** @var \open20\amos\core\record\Record $attrMmModel */
-            $attrMmModel = new $modelClassName();
 
             // Remove all old references
             $attribute = $modelClassName::find()
@@ -228,10 +225,10 @@ class PartnershipProfilesController extends CrudController
             }
 
             foreach ($attrMmPost as $attrId) {
+                /** @var \open20\amos\core\record\Record $attrMmModel */
+                $attrMmModel = new $modelClassName();
                 $attrMmModel->{$thisModelIdField} = $this->model->id;
                 $attrMmModel->{$otherIdField} = $attrId;
-                $attribute = $attrMmModel;
-
                 $ok = $attrMmModel->save(false);
                 if (!$ok) {
                     $allOk = false;
@@ -368,13 +365,29 @@ class PartnershipProfilesController extends CrudController
     {
         $this->setUpLayout('form');
 
-        $this->model = new PartnershipProfiles();
+        $this->model = $this->partnerProfModule->createModel('PartnershipProfiles');
         $okFacilitator = $this->setDefaultFacilitator();
 
-        Yii::$app->view->params['textHelp']['filename'] = 'expression_of_interest_description';
+        Yii::$app->view->params['textHelp']['filename'] = 'expression_of_interest_description';        
 
         if ($this->model->load(Yii::$app->request->post()) && $this->model->validate()) {
             if ($okFacilitator) {
+            $validateOnSave = true;
+                if ($this->model->status == PartnershipProfiles::PARTNERSHIP_PROFILES_WORKFLOW_STATUS_TOVALIDATE) {
+                    $this->model->status  = PartnershipProfiles::PARTNERSHIP_PROFILES_WORKFLOW_STATUS_DRAFT;
+                    $this->model->save();
+                    $this->model->status  = PartnershipProfiles::PARTNERSHIP_PROFILES_WORKFLOW_STATUS_TOVALIDATE;
+                    $validateOnSave = false;
+                }
+
+                if ($this->model->status == PartnershipProfiles::PARTNERSHIP_PROFILES_WORKFLOW_STATUS_VALIDATED) {
+                    $this->model->status  = PartnershipProfiles::PARTNERSHIP_PROFILES_WORKFLOW_STATUS_DRAFT;
+                    $this->model->save();
+                    $this->model->status  = PartnershipProfiles::PARTNERSHIP_PROFILES_WORKFLOW_STATUS_TOVALIDATE;
+                    $this->model->save();
+                    $this->model->status  = PartnershipProfiles::PARTNERSHIP_PROFILES_WORKFLOW_STATUS_VALIDATED;
+                    $validateOnSave = false;
+                }
                 $attrPartnershipProfilesTypesMmPost = [];
                 if (!empty(\Yii::$app->request->post('PartnershipProfiles')['attrPartnershipProfilesTypesMm'])) {
                     $attrPartnershipProfilesTypesMmPost = \Yii::$app->request->post('PartnershipProfiles')['attrPartnershipProfilesTypesMm'];
@@ -383,7 +396,7 @@ class PartnershipProfilesController extends CrudController
                 if (!empty(\Yii::$app->request->post('PartnershipProfiles')['attrPartnershipProfilesCountriesMm'])) {
                     $attrPartnershipProfilesCountriesMmPost = \Yii::$app->request->post('PartnershipProfiles')['attrPartnershipProfilesCountriesMm'];
                 }
-                if ($this->model->save()) {
+                if ($this->model->save($validateOnSave)) {
                     $okPartnershipProfileType = $this->savePartnershipProfileTypes($attrPartnershipProfilesTypesMmPost);
                     $okPartnershipProfileCountries = $this->savePartnershipProfileCountries($attrPartnershipProfilesCountriesMmPost);
                     if ($okPartnershipProfileType && $okPartnershipProfileCountries) {

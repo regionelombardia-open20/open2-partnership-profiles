@@ -23,7 +23,7 @@ use yii\web\View;
  * @var open20\amos\partnershipprofiles\models\PartnershipProfiles $model
  */
 
-$this->title = Module::t('amospartnershipprofiles', 'Select facilitator for') . ' ' . $model->getTitle();
+$this->title = Module::t('amospartnershipprofiles', 'Select facilitator for') . ' "' . $model->getTitle() . '"';
 
 /** @var PartnershipProfilesController $appController */
 $appController = Yii::$app->controller;

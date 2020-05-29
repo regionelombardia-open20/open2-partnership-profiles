@@ -14,9 +14,12 @@ namespace open20\amos\partnershipprofiles\widgets\icons;
 use open20\amos\core\icons\AmosIcons;
 use open20\amos\core\widget\WidgetAbstract;
 use open20\amos\core\widget\WidgetIcon;
-use open20\amos\partnershipprofiles\models\PartnershipProfiles;
-use open20\amos\partnershipprofiles\models\search\PartnershipProfilesSearch;
+//use open20\amos\partnershipprofiles\models\PartnershipProfiles;
+//use open20\amos\partnershipprofiles\models\search\PartnershipProfilesSearch;
 use open20\amos\partnershipprofiles\Module;
+
+use open20\amos\utility\models\BulletCounters;
+
 use Yii;
 
 /**
@@ -25,11 +28,13 @@ use Yii;
  */
 class WidgetIconPartnershipProfilesAll extends WidgetIcon
 {
+
     /**
      * @inheritdoc
      */
     public function init()
     {
+        
         parent::init();
 
         $paramsClassSpan = [
@@ -42,10 +47,20 @@ class WidgetIconPartnershipProfilesAll extends WidgetIcon
 
         if (!empty(Yii::$app->params['dashboardEngine']) && Yii::$app->params['dashboardEngine'] == WidgetAbstract::ENGINE_ROWS) {
             $this->setIconFramework(AmosIcons::IC);
-            $this->setIcon('propostecollaborazione');
+            $customIcon = Module::instance()->pluginCustomIcon;
+            if (strlen($customIcon) > 0) {
+                $this->setIcon($customIcon);
+            } else {
+                $this->setIcon('propostecollaborazione');
+            }
             $paramsClassSpan = [];
         } else {
-            $this->setIcon('partnership-profiles');
+            $customIcon = Module::instance()->pluginCustomIcon;
+            if (strlen($customIcon) > 0) {
+                $this->setIcon($customIcon);
+            } else {
+                $this->setIcon('partnership-profiles');
+            }
         }
 
         $this->setUrl(['/partnershipprofiles/partnership-profiles/index']);
@@ -53,13 +68,33 @@ class WidgetIconPartnershipProfilesAll extends WidgetIcon
         $this->setModuleName('partnershipprofiles');
         $this->setNamespace(__CLASS__);
 
-        $search = new PartnershipProfilesSearch();
-        $this->setBulletCount(
-            $this->makeBulletCounter(
-                Yii::$app->getUser()->getId(),
-                PartnershipProfiles::class,
-                $search->searchAllQuery([])
-            )
-        );
+        // Read and reset counter from bullet_counters table, bacthed calculated!
+        if ($this->disableBulletCounters == false) {
+            $this->setBulletCount(
+                BulletCounters::getAmosWidgetIconCounter(
+                    Yii::$app->getUser()->getId(), 
+                    Module::getModuleName(),
+                    $this->getNamespace(),
+                    $this->resetBulletCount()
+                )
+            );
+        }
+        
+//        if ($this->disableBulletCounters == false) {
+//            $search = new PartnershipProfilesSearch();
+//            $search->setEventAfterCounter();
+//            $query = $search->searchAllQuery([]);
+//            
+//            $this->setBulletCount(
+//                $this->makeBulletCounter(
+//                    Yii::$app->getUser()->getId(),
+//                    PartnershipProfiles::class,
+//                    $query
+//                )
+//            );
+//            
+//            \Yii::$app->session->set('_offQuery', $query);
+//            $this->trigger(self::EVENT_AFTER_COUNT);
+//        }
     }
 }

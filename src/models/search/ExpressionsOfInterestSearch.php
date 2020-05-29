@@ -68,8 +68,11 @@ class ExpressionsOfInterestSearch extends ExpressionsOfInterest
      */
     public function baseSearch($params)
     {
+        /** @var ExpressionsOfInterest $expressionsOfInterestModel */
+        $expressionsOfInterestModel = $this->partnerProfModule->createModel('ExpressionsOfInterest');
+
         /** @var ActiveQuery $query */
-        $query = ExpressionsOfInterest::find();
+        $query = $expressionsOfInterestModel::find();
 
         $query->joinWith('partnershipProfile', true, 'INNER JOIN');
 

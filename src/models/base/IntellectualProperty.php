@@ -78,6 +78,6 @@ class IntellectualProperty extends Record
      */
     public function getPartnershipProfiles()
     {
-        return $this->hasMany(\open20\amos\partnershipprofiles\models\PartnershipProfiles::className(), ['intellectual_property_id' => 'id']);
+        return $this->hasMany(Module::instance()->model('PartnershipProfiles'), ['intellectual_property_id' => 'id']);
     }
 }

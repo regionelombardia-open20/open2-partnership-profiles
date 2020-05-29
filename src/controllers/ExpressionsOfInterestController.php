@@ -170,8 +170,11 @@ class ExpressionsOfInterestController extends \open20\amos\partnershipprofiles\c
         Yii::$app->view->params['textHelp'] = ['filename' => 'all_expressions_of_interest_help'];
         Url::remember();
 
+        /** @var PartnershipProfiles $partnershipProfilesModel */
+        $partnershipProfilesModel = $this->partnerProfModule->createModel('PartnershipProfiles');
+
         // START Check permission
-        $partnershipProfile = PartnershipProfiles::findOne($partnership_profile_id);
+        $partnershipProfile = $partnershipProfilesModel::findOne($partnership_profile_id);
         if (empty($partnershipProfile)){
             throw new InvalidParamException();
         }
@@ -239,7 +242,9 @@ class ExpressionsOfInterestController extends \open20\amos\partnershipprofiles\c
      */
     public function actionValidate($id)
     {
-        $expressionofint = ExpressionsOfInterest::findOne($id);
+        /** @var ExpressionsOfInterest $expressionsOfInterestModel */
+        $expressionsOfInterestModel = $this->partnerProfModule->createModel('ExpressionsOfInterest');
+        $expressionofint = $expressionsOfInterestModel::findOne($id);
         try {
             $expressionofint->sendToStatus(ExpressionsOfInterest::EXPRESSIONS_OF_INTEREST_WORKFLOW_STATUS_ACTIVE);
             $ok = $expressionofint->save(false);
@@ -261,7 +266,9 @@ class ExpressionsOfInterestController extends \open20\amos\partnershipprofiles\c
      */
     public function actionReject($id)
     {
-        $expressionofint = ExpressionsOfInterest::findOne($id);
+        /** @var ExpressionsOfInterest $expressionsOfInterestModel */
+        $expressionsOfInterestModel = $this->partnerProfModule->createModel('ExpressionsOfInterest');
+        $expressionofint = $expressionsOfInterestModel::findOne($id);
         try {
             $expressionofint->sendToStatus(ExpressionsOfInterest::EXPRESSIONS_OF_INTEREST_WORKFLOW_STATUS_REJECTED);
             $ok = $expressionofint->save(false);

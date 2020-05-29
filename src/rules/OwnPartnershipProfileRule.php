@@ -29,7 +29,6 @@ abstract class OwnPartnershipProfileRule extends BasicContentRule
 
         $allowedStates = [
             PartnershipProfiles::PARTNERSHIP_PROFILES_WORKFLOW_STATUS_DRAFT,
-            PartnershipProfiles::PARTNERSHIP_PROFILES_WORKFLOW_STATUS_TOVALIDATE
         ];
 
         if (!in_array($model->status, $allowedStates) || ($model->created_by != $user)) {

@@ -11,11 +11,10 @@
 
 namespace open20\amos\partnershipprofiles\widgets\icons;
 
+use open20\amos\core\icons\AmosIcons;
+use open20\amos\core\widget\WidgetAbstract;
 use open20\amos\core\widget\WidgetIcon;
 use open20\amos\partnershipprofiles\Module;
-use open20\amos\core\widget\WidgetAbstract;
-use open20\amos\core\icons\AmosIcons;
-
 use Yii;
 use yii\helpers\ArrayHelper;
 
@@ -25,7 +24,6 @@ use yii\helpers\ArrayHelper;
  */
 class WidgetIconExpressionsOfInterestAllAdmin extends WidgetIcon
 {
-
     /**
      * @inheritdoc
      */
@@ -43,10 +41,20 @@ class WidgetIconExpressionsOfInterestAllAdmin extends WidgetIcon
 
         if (!empty(Yii::$app->params['dashboardEngine']) && Yii::$app->params['dashboardEngine'] == WidgetAbstract::ENGINE_ROWS) {
             $this->setIconFramework(AmosIcons::IC);
-            $this->setIcon('propostecollaborazione');
+            $customIcon = Module::instance()->pluginCustomIcon;
+            if (strlen($customIcon) > 0) {
+                $this->setIcon($customIcon);
+            } else {
+                $this->setIcon('propostecollaborazione');
+            }
             $paramsClassSpan = [];
         } else {
-            $this->setIcon('partnership-profiles');
+            $customIcon = Module::instance()->pluginCustomIcon;
+            if (strlen($customIcon) > 0) {
+                $this->setIcon($customIcon);
+            } else {
+                $this->setIcon('partnership-profiles');
+            }
         }
 
         $this->setUrl(['/partnershipprofiles/expressions-of-interest/all-admin']);
@@ -61,5 +69,4 @@ class WidgetIconExpressionsOfInterestAllAdmin extends WidgetIcon
             )
         );
     }
-
 }

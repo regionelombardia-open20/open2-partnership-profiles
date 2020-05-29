@@ -82,7 +82,7 @@ class PartnershipProfilesTypesMm extends Record
      */
     public function getPartnershipProfile()
     {
-        return $this->hasOne(\open20\amos\partnershipprofiles\models\PartnershipProfiles::className(), ['id' => 'partnership_profile_id']);
+        return $this->hasOne(Module::instance()->model('PartnershipProfiles'), ['id' => 'partnership_profile_id']);
     }
     
     /**

@@ -52,7 +52,7 @@ $enableAutoOpenSearchPanel = !isset(\Yii::$app->params['enableAutoOpenSearchPane
         <?= $form->field($model, 'short_description')->textInput(['placeholder' => Module::t('amospartnershipprofiles', 'Search by short description')]) ?>
     </div>
 
-    <?php if (isset($moduleTag) && in_array(PartnershipProfiles::className(), $moduleTag->modelsEnabled) && $moduleTag->behaviors): ?>
+    <?php if (isset($moduleTag) && in_array(Module::instance()->model('PartnershipProfiles'), $moduleTag->modelsEnabled) && $moduleTag->behaviors): ?>
         <div class="col-xs-12">
             <?php
             $params = \Yii::$app->request->getQueryParams();

@@ -459,7 +459,7 @@ $enabledTabs = !empty($module->fieldsCommunityConfigurations[$communityConfigura
     ?>
 
     <?php
-        $statusToRenderToHide = $model->getStatusToRenderToHide();
+        $statusToRenderToHide = $model->getStatusToRenderToHide();      
     ?>
 
     <?=

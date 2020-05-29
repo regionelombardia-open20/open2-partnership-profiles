@@ -81,6 +81,6 @@ class WorkLanguage extends Record
      */
     public function getPartnershipProfiles()
     {
-        return $this->hasMany(\open20\amos\partnershipprofiles\models\PartnershipProfiles::className(), ['work_language_id' => 'id']);
+        return $this->hasMany(Module::instance()->model('PartnershipProfiles'), ['work_language_id' => 'id']);
     }
 }

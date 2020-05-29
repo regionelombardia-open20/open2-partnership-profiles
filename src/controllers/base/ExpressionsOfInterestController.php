@@ -19,7 +19,6 @@ use open20\amos\dashboard\controllers\TabDashboardControllerTrait;
 use open20\amos\partnershipprofiles\events\PartnershipProfilesWorkflowEvent;
 use open20\amos\partnershipprofiles\models\ExpressionsOfInterest;
 use open20\amos\partnershipprofiles\models\PartnershipProfiles;
-use open20\amos\partnershipprofiles\models\search\ExpressionsOfInterestSearch;
 use open20\amos\partnershipprofiles\Module;
 use open20\amos\partnershipprofiles\utility\ExpressionsOfInterestUtility;
 use open20\amos\partnershipprofiles\utility\PartnershipProfilesUtility;
@@ -62,8 +61,8 @@ class ExpressionsOfInterestController extends CrudController
 
         $this->initDashboardTrait();
 
-        $this->setModelObj(new ExpressionsOfInterest());
-        $this->setModelSearch(new ExpressionsOfInterestSearch());
+        $this->setModelObj($this->partnerProfModule->createModel('ExpressionsOfInterest'));
+        $this->setModelSearch($this->partnerProfModule->createModel('ExpressionsOfInterestSearch'));
 
         $this->viewList = [
             'name' => 'list',
@@ -121,7 +120,7 @@ class ExpressionsOfInterestController extends CrudController
     protected function listenEvents()
     {
         Event::on(
-            ExpressionsOfInterest::className(),
+            $this->partnerProfModule->model('ExpressionsOfInterest'),
             'afterChangeStatusFrom{' . ExpressionsOfInterest::EXPRESSIONS_OF_INTEREST_WORKFLOW_STATUS_ACTIVE . '}to{' . ExpressionsOfInterest::EXPRESSIONS_OF_INTEREST_WORKFLOW_STATUS_TOVALIDATE . '}',
             [new PartnershipProfilesWorkflowEvent(), 'updatePartnershipProfileStatus'],
             $this->model
@@ -258,8 +257,11 @@ class ExpressionsOfInterestController extends CrudController
      */
     public function actionCreate($partnership_profile_id = null)
     {
+        /** @var PartnershipProfiles $partnershipProfilesModel */
+        $partnershipProfilesModel = $this->partnerProfModule->createModel('PartnershipProfiles');
+
         // START Check permission
-        $partnershipProfile = PartnershipProfiles::findOne($partnership_profile_id);
+        $partnershipProfile = $partnershipProfilesModel::findOne($partnership_profile_id);
         if (empty($partnershipProfile)) {
             throw new InvalidParamException();
         }
@@ -275,9 +277,13 @@ class ExpressionsOfInterestController extends CrudController
         }
 
         $this->setUpLayout('form');
-        $this->model = new ExpressionsOfInterest();
+        $this->model = $this->partnerProfModule->createModel('ExpressionsOfInterest');
         $this->model->partnership_profile_id = $partnership_profile_id;
-        $partnershipProfile = PartnershipProfiles::findOne($partnership_profile_id);
+
+        /** @var PartnershipProfiles $partnershipProfilesModel */
+        $partnershipProfilesModel = $this->partnerProfModule->createModel('PartnershipProfiles');
+
+        $partnershipProfile = $partnershipProfilesModel::findOne($partnership_profile_id);
 
         if ($this->model->load(Yii::$app->request->post())) {
             $moduleCwh = Yii::$app->getModule('cwh');
@@ -291,7 +297,27 @@ class ExpressionsOfInterestController extends CrudController
                 }
             }
             if ($this->model->validate()) {
-                if ($this->model->save()) {
+                $validateOnSave = true;
+                if ($this->model->status == ExpressionsOfInterest::EXPRESSIONS_OF_INTEREST_WORKFLOW_STATUS_TOVALIDATE) {
+                    $this->model->status  = ExpressionsOfInterest::EXPRESSIONS_OF_INTEREST_WORKFLOW_STATUS_DRAFT;
+                    $this->model->save();
+                    $this->model->status  = ExpressionsOfInterest::EXPRESSIONS_OF_INTEREST_WORKFLOW_STATUS_ACTIVE;
+                    $this->model->save();
+                    $this->model->status  = ExpressionsOfInterest::EXPRESSIONS_OF_INTEREST_WORKFLOW_STATUS_TOVALIDATE;
+                    $validateOnSave = false;
+                }
+
+                if ($this->model->status == ExpressionsOfInterest::EXPRESSIONS_OF_INTEREST_WORKFLOW_STATUS_RELEVANT) {
+                    $this->model->status  = ExpressionsOfInterest::EXPRESSIONS_OF_INTEREST_WORKFLOW_STATUS_DRAFT;
+                    $this->model->save();
+                    $this->model->status  = ExpressionsOfInterest::EXPRESSIONS_OF_INTEREST_WORKFLOW_STATUS_ACTIVE;
+                    $this->model->save();
+                    $this->model->status  = ExpressionsOfInterest::EXPRESSIONS_OF_INTEREST_WORKFLOW_STATUS_TOVALIDATE;
+                    $this->model->save();
+                    $this->model->status  = ExpressionsOfInterest::EXPRESSIONS_OF_INTEREST_WORKFLOW_STATUS_RELEVANT;
+                    $validateOnSave = false;
+                }
+                if ($this->model->save($validateOnSave)) {
                     Yii::$app->getSession()->addFlash('success', Module::tHtml('amospartnershipprofiles', 'Element successfully created.'));
                     return $this->redirect(['update', 'id' => $this->model->id]);
                 } else {

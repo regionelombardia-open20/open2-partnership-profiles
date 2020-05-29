@@ -15,6 +15,9 @@ use open20\amos\core\icons\AmosIcons;
 use open20\amos\core\widget\WidgetAbstract;
 use open20\amos\core\widget\WidgetIcon;
 use open20\amos\partnershipprofiles\Module;
+
+use open20\amos\utility\models\BulletCounters;
+
 use Yii;
 use yii\helpers\ArrayHelper;
 
@@ -24,11 +27,13 @@ use yii\helpers\ArrayHelper;
  */
 class WidgetIconPartnershipProfilesDashboard extends WidgetIcon
 {
+
     /**
      * @inheritdoc
      */
     public function init()
     {
+        
         parent::init();
 
         $paramsClassSpan = [
@@ -41,10 +46,20 @@ class WidgetIconPartnershipProfilesDashboard extends WidgetIcon
 
         if (!empty(\Yii::$app->params['dashboardEngine']) && \Yii::$app->params['dashboardEngine'] == WidgetAbstract::ENGINE_ROWS) {
             $this->setIconFramework(AmosIcons::IC);
-            $this->setIcon('propostecollaborazione');
+            $customIcon = Module::instance()->pluginCustomIcon;
+            if (strlen($customIcon) > 0) {
+                $this->setIcon($customIcon);
+            } else {
+                $this->setIcon('propostecollaborazione');
+            }
             $paramsClassSpan = [];
         } else {
-            $this->setIcon('partnership-profiles');
+            $customIcon = Module::instance()->pluginCustomIcon;
+            if (strlen($customIcon) > 0) {
+                $this->setIcon($customIcon);
+            } else {
+                $this->setIcon('partnership-profiles');
+            }
         }
 
         $this->setUrl(['/partnershipprofiles']);
@@ -59,11 +74,22 @@ class WidgetIconPartnershipProfilesDashboard extends WidgetIcon
             )
         );
 
-        $this->setBulletCount(
-            $this->makeBulletCounter(
-                Yii::$app->getUser()->getId()
-            )
-        );
+        // Read and reset counter from bullet_counters table, bacthed calculated!
+        if ($this->disableBulletCounters == false) {
+            $widgetAll = new WidgetIconPartnershipProfilesAll();
+            $this->setBulletCount(
+                $widgetAll->getBulletCount()
+            );
+        }
+        
+//        if ($this->disableBulletCounters == false) {
+//            $this->setBulletCount(
+//                $this->makeBulletCounter(
+//                    Yii::$app->getUser()->getId()
+//                )
+//            );
+////            $this->trigger(self::EVENT_AFTER_COUNT);
+//        }
     }
 
     /**
@@ -72,11 +98,11 @@ class WidgetIconPartnershipProfilesDashboard extends WidgetIcon
      * @param null $externalQuery
      * @return string
      */
-    public function makeBulletCounter($userId = null, $className = null, $externalQuery = null)
-    {
-        $widgetAll = new WidgetIconPartnershipProfilesAll();
-        $widgetCreatedBy = new WidgetIconPartnershipProfilesCreatedBy();
-
-        return $widgetAll->getBulletCount() + $widgetCreatedBy->getBulletCount();
-    }
+//    public function makeBulletCounter($userId = null, $className = null, $externalQuery = null)
+//    {
+//        $widgetAll = new WidgetIconPartnershipProfilesAll();
+////        $widgetCreatedBy = new WidgetIconPartnershipProfilesCreatedBy();
+//
+//        return $widgetAll->getBulletCount(); // + $widgetCreatedBy->getBulletCount();
+//    }
 }

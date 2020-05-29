@@ -81,10 +81,10 @@ if (isset($moduleCwh) && !empty($moduleCwh->getCwhScope())) {
     }
 }
 
-$enabledFields =!empty($module->fieldsCommunityConfigurations[$communityConfigurationsId]['fields']) ? $module->fieldsCommunityConfigurations[$communityConfigurationsId]['fields'] : (!empty($module->fieldsConfigurations['fields']) ? $module->fieldsConfigurations['fields'] : []);
+$enabledFields = !empty($module->fieldsCommunityConfigurations[$communityConfigurationsId]['fields']) ? $module->fieldsCommunityConfigurations[$communityConfigurationsId]['fields'] : (!empty($module->fieldsConfigurations['fields']) ? $module->fieldsConfigurations['fields'] : []);
 $enabledTabs = !empty($module->fieldsCommunityConfigurations[$communityConfigurationsId]['tabs']) ? $module->fieldsCommunityConfigurations[$communityConfigurationsId]['tabs'] : (!empty($module->fieldsConfigurations['tabs']) ? $module->fieldsConfigurations['tabs'] : []);
 
-if($model->status != PartnershipProfiles::PARTNERSHIP_PROFILES_WORKFLOW_STATUS_VALIDATED) {
+if ($model->status != PartnershipProfiles::PARTNERSHIP_PROFILES_WORKFLOW_STATUS_VALIDATED) {
     echo \open20\amos\workflow\widgets\WorkflowTransitionStateDescriptorWidget::widget([
         'model' => $model,
         'workflowId' => PartnershipProfiles::PARTNERSHIP_PROFILES_WORKFLOW,
@@ -168,9 +168,9 @@ if($model->status != PartnershipProfiles::PARTNERSHIP_PROFILES_WORKFLOW_STATUS_V
                 <?php
                 $attributes = [];
                 if (!empty($enabledFields['title']) && $enabledFields['title'] == true) {
-                    $attributes ['title'] = 'title';
+                    $attributes[] = 'title';
                 }
-                $attributes ['status'] = [
+                $attributes['status'] = [
                     'attribute' => 'status',
                     'label' => $model->getAttributeLabel('status'),
                     'value' => Module::t('amospartnershipprofiles', $model->getWorkflowStatus()->getLabel()),
@@ -178,26 +178,26 @@ if($model->status != PartnershipProfiles::PARTNERSHIP_PROFILES_WORKFLOW_STATUS_V
 
 
                 if (!empty($enabledFields['extended_description']) && $enabledFields['extended_description'] == true) {
-                    $attributes ['extended_description'] = ['attribute' => 'extended_description', 'format' => 'html'];
+                    $attributes[] = 'extended_description:html';
                 }
                 if (!empty($enabledFields['expected_contribution']) && $enabledFields['expected_contribution'] == true) {
-                    $attributes ['expected_contribution'] = ['attribute' => 'expected_contribution', 'format' => 'html'];
+                    $attributes[] = 'expected_contribution:html';
                 }
                 if (!empty($enabledFields['advantages_innovative_aspects']) && $enabledFields['advantages_innovative_aspects'] == true) {
-                    $attributes ['advantages_innovative_aspects'] = ['attribute' => 'advantages_innovative_aspects', 'format' => 'html'];
+                    $attributes[] = 'advantages_innovative_aspects:html';
                 }
                 if (!empty($enabledFields['contact_person']) && $enabledFields['contact_person'] == true) {
-                    $attributes ['contact_person'] = 'contact_person';
+                    $attributes[] = 'contact_person';
                 }
                 if (!empty($enabledFields['other_prospect_desired_collab']) && $enabledFields['other_prospect_desired_collab'] == true) {
-                    $attributes ['other_prospect_desired_collab'] = 'other_prospect_desired_collab';
+                    $attributes[] = 'other_prospect_desired_collab';
                 }
                 if (!empty($enabledFields['partnership_profile_date']) && $enabledFields['partnership_profile_date'] == true) {
-                    $attributes ['partnership_profile_date'] = 'partnership_profile_date';
+                    $attributes[] = 'partnership_profile_date:date';
                 }
                 if (!empty($enabledFields['expiration_in_months']) && $enabledFields['expiration_in_months'] == true) {
-                    $attributes ['expiration_in_months'] = 'expiration_in_months';
-                    $attributes ['expire_date'] = [
+                    $attributes[] = 'expiration_in_months';
+                    $attributes[] = [
                         'label' => Module::t('amospartnershipprofiles', 'Calculated Expiry Date'),
                         'value' => function ($model) {
                             /** @var PartnershipProfiles $model */
@@ -209,39 +209,38 @@ if($model->status != PartnershipProfiles::PARTNERSHIP_PROFILES_WORKFLOW_STATUS_V
 
                 if (!empty($enabledTabs['tab-more-information']) && $enabledTabs['tab-more-information'] == true) {
                     if (!empty($enabledFields['english_title']) && $enabledFields['english_title'] == true) {
-                        $attributes ['english_title'] = 'english_title';
+                        $attributes[] = 'english_title';
                     }
                     if (!empty($enabledFields['english_short_description']) && $enabledFields['english_short_description'] == true) {
-                        $attributes ['english_short_description'] = ['attribute' => 'english_short_description', 'format' => 'html'];
+                        $attributes[] = 'english_short_description:html';
                     }
                     if (!empty($enabledFields['english_extended_description']) && $enabledFields['english_extended_description'] == true) {
-                        $attributes ['english_extended_description'] = ['attribute' => 'english_extended_description', 'format' => 'html'];
+                        $attributes[] = 'english_extended_description:html';
                     }
                     if (!empty($enabledFields['willingness_foreign_partners']) && $enabledFields['willingness_foreign_partners'] == true) {
-                        $attributes ['willingness_foreign_partners'] = ['attribute' => 'willingness_foreign_partners', 'format' => 'html'];
+                        $attributes[] = 'willingness_foreign_partners:boolean';
                     }
                     if (!empty($enabledFields['work_language_id']) && $enabledFields['work_language_id'] == true) {
-                        $attributes ['work_language_id'] = 'workLanguage.work_language';
+                        $attributes[] = 'workLanguage.work_language';
                     }
                     if (!empty($enabledFields['development_stage_id']) && $enabledFields['development_stage_id'] == true) {
-                        $attributes ['developmentStage.value'] = [
+                        $attributes['developmentStage.value'] = [
                             'attribute' => 'developmentStage.value',
                             'label' => Module::t('amospartnershipprofiles', 'Development stage')
                         ];
                     }
                     if (!empty($enabledFields['other_development_stage']) && $enabledFields['other_development_stage'] == true) {
-                        $attributes ['other_development_stage'] = 'other_development_stage.work_language';
+                        $attributes[] = 'other_development_stage.work_language';
                     }
                     if (!empty($enabledFields['intellectual_property_id']) && $enabledFields['intellectual_property_id'] == true) {
-                        $attributes ['intellectualProperty.value'] = [
+                        $attributes['intellectualProperty.value'] = [
                             'attribute' => 'intellectualProperty.value',
                             'label' => Module::t('amospartnershipprofiles', 'Intellectual property')
                         ];
                     }
                     if (!empty($enabledFields['other_intellectual_property']) && $enabledFields['other_intellectual_property'] == true) {
-                        $attributes ['other_intellectual_property'] = 'other_intellectual_property';
+                        $attributes[] = 'other_intellectual_property';
                     }
-
                 }
 
                 if (!empty($enabledFields['attrPartnershipProfilesTypesMm']) && $enabledFields['attrPartnershipProfilesTypesMm'] == true) {

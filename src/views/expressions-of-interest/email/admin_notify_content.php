@@ -8,12 +8,18 @@
  * @category   CategoryName
  */
 
+use open20\amos\partnershipprofiles\models\PartnershipProfiles;
+use open20\amos\partnershipprofiles\Module;
+
 /**
  * @var \open20\amos\partnershipprofiles\models\base\PartnershipProfiles $partnershipProfile
  * @var integer[] $listOfArchived
  * @var integer[] $errorIds
  * @var string $dateStartScript
  */
+
+/** @var Module $partnerProfModule */
+$partnerProfModule = Module::instance();
 
 ?>
 <div style="border:1px solid #cccccc;padding:10px;margin-bottom: 10px;background-color: #ffffff;">
@@ -42,7 +48,9 @@
             </tr>
             <?php
             foreach ($listOfArchived as $id):
-                $partnershipProfile = \open20\amos\partnershipprofiles\models\PartnershipProfiles::findOne($id);
+                /** @var PartnershipProfiles $partnershipProfilesModel */
+                $partnershipProfilesModel = $partnerProfModule->createModel('PartnershipProfiles');
+                $partnershipProfile = $partnershipProfilesModel::findOne($id);
                 ?>
                 <tr>
                     <td>
@@ -91,7 +99,9 @@
                 </tr>
                 <?php
                 foreach ($errorIds as $id):
-                    $partnershipProfile = \open20\amos\partnershipprofiles\models\PartnershipProfiles::findOne($id);
+                    /** @var PartnershipProfiles $partnershipProfilesModel */
+                    $partnershipProfilesModel = $partnerProfModule->createModel('PartnershipProfiles');
+                    $partnershipProfile = $partnershipProfilesModel::findOne($id);
                     ?>
                     <tr>
                         <td>

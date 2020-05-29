@@ -82,7 +82,7 @@ class PartnershipProfilesCountriesMm extends Record
      */
     public function getPartnershipProfiles()
     {
-        return $this->hasMany(\open20\amos\partnershipprofiles\models\PartnershipProfiles::className(), ['id' => 'partnership_profile_id']);
+        return $this->hasMany(Module::instance()->model('PartnershipProfiles'), ['id' => 'partnership_profile_id']);
     }
     
     /**

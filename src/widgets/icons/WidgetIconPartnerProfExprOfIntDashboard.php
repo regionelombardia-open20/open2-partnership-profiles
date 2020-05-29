@@ -40,10 +40,20 @@ class WidgetIconPartnerProfExprOfIntDashboard extends WidgetIcon {
 
         if (!empty(\Yii::$app->params['dashboardEngine']) && \Yii::$app->params['dashboardEngine'] == WidgetAbstract::ENGINE_ROWS) {
             $this->setIconFramework(AmosIcons::IC);
-            $this->setIcon('propostecollaborazione');
+            $customIcon = Module::instance()->pluginCustomIcon;
+            if (strlen($customIcon) > 0) {
+                $this->setIcon($customIcon);
+            } else {
+                $this->setIcon('propostecollaborazione');
+            }
             $paramsClassSpan = [];
         } else {
-            $this->setIcon('partnership-profiles');
+            $customIcon = Module::instance()->pluginCustomIcon;
+            if (strlen($customIcon) > 0) {
+                $this->setIcon($customIcon);
+            } else {
+                $this->setIcon('partnership-profiles');
+            }
         }
 
         $this->setUrl(['/partnershipprofiles/partnership-profiles/facilitator-partnership-profiles']);

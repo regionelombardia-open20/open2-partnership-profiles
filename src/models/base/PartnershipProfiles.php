@@ -13,7 +13,8 @@ namespace open20\amos\partnershipprofiles\models\base;
 
 use open20\amos\admin\AmosAdmin;
 use open20\amos\community\models\CommunityInterface;
-use open20\amos\notificationmanager\record\NotifyRecord;
+use open20\amos\core\record\ContentModel;
+use open20\amos\core\validators\StringHtmlValidator;
 use open20\amos\partnershipprofiles\Module;
 use yii\helpers\ArrayHelper;
 use Yii;
@@ -74,7 +75,7 @@ use Yii;
  *
  * @package open20\amos\partnershipprofiles\models\base
  */
-class PartnershipProfiles extends NotifyRecord implements CommunityInterface
+abstract class PartnershipProfiles extends ContentModel implements CommunityInterface
 {
     /**
      * @var array $attrPartnershipProfilesTypesMm Relation attribute for partnership profiles types
@@ -92,6 +93,11 @@ class PartnershipProfiles extends NotifyRecord implements CommunityInterface
     protected $partnershipProfilesModule = null;
 
     /**
+     * @var Module $partnerProfModule
+     */
+    public $partnerProfModule = null;
+
+    /**
      * @inheritdoc
      */
     public static function tableName()
@@ -99,8 +105,13 @@ class PartnershipProfiles extends NotifyRecord implements CommunityInterface
         return 'partnership_profiles';
     }
 
+    /**
+     * @inheritdoc
+     */
     public function init()
     {
+        $this->partnerProfModule = Module::instance();
+
         parent::init();
         $communityConfigurationsId= null; 
         
@@ -171,14 +182,10 @@ class PartnershipProfiles extends NotifyRecord implements CommunityInterface
                 'other_prospect_desired_collab',
                 'contact_person',
                 'english_title',
-                'english_short_description',
                 'other_work_language',
                 'other_development_stage',
                 'other_intellectual_property'
             ], 'string', 'max' => 255],
-            [[
-                'expected_contribution'
-            ], 'string', 'max' => 1000],
             [[
                 'partnership_profile_date',
                 'validated_at_least_once',
@@ -212,13 +219,23 @@ class PartnershipProfiles extends NotifyRecord implements CommunityInterface
         ) {
             $rules[] = [[
                 'short_description'
-            ], 'string', 'max' => 400];
+            ],  StringHtmlValidator::className(), 'max' => 400];
+            $rules[] = [[
+                'english_short_description'
+            ],  'string', 'max' => 255];
             $rules[] = [[
                 'extended_description'
-            ], 'string', 'min' => 1000];
+            ],  StringHtmlValidator::className(), 'min' => 1000];
             $rules[] = [[
                 'advantages_innovative_aspects'
-            ], 'string', 'min' => 500];
+            ],  StringHtmlValidator::className(), 'min' => 500];
+            $rules[] = [[
+                'expected_contribution'
+            ],  StringHtmlValidator::className(), 'max' => 1000];
+        } else {
+            $rules[] = [[
+                'english_short_description'
+            ],  'string'];
         }
 
         return $rules;
@@ -350,7 +367,7 @@ class PartnershipProfiles extends NotifyRecord implements CommunityInterface
      */
     public function getExpressionsOfInterest()
     {
-        return $this->hasMany(\open20\amos\partnershipprofiles\models\ExpressionsOfInterest::className(), ['partnership_profile_id' => 'id']);
+        return $this->hasMany($this->partnerProfModule->model('ExpressionsOfInterest'), ['partnership_profile_id' => 'id']);
     }
 
     /**
@@ -358,7 +375,7 @@ class PartnershipProfiles extends NotifyRecord implements CommunityInterface
      */
     public function getDraftExpressionsOfInterest()
     {
-        return $this->hasMany(\open20\amos\partnershipprofiles\models\ExpressionsOfInterest::className(), ['partnership_profile_id' => 'id'])
+        return $this->hasMany($this->partnerProfModule->model('ExpressionsOfInterest'), ['partnership_profile_id' => 'id'])
             ->andWhere([\open20\amos\partnershipprofiles\models\ExpressionsOfInterest::tableName() . '.status' => \open20\amos\partnershipprofiles\models\ExpressionsOfInterest::EXPRESSIONS_OF_INTEREST_WORKFLOW_STATUS_DRAFT]);
     }
 
@@ -367,7 +384,7 @@ class PartnershipProfiles extends NotifyRecord implements CommunityInterface
      */
     public function getActiveExpressionsOfInterest()
     {
-        return $this->hasMany(\open20\amos\partnershipprofiles\models\ExpressionsOfInterest::className(), ['partnership_profile_id' => 'id'])
+        return $this->hasMany($this->partnerProfModule->model('ExpressionsOfInterest'), ['partnership_profile_id' => 'id'])
             ->andWhere([\open20\amos\partnershipprofiles\models\ExpressionsOfInterest::tableName() . '.status' => \open20\amos\partnershipprofiles\models\ExpressionsOfInterest::EXPRESSIONS_OF_INTEREST_WORKFLOW_STATUS_ACTIVE]);
     }
 
@@ -376,7 +393,7 @@ class PartnershipProfiles extends NotifyRecord implements CommunityInterface
      */
     public function getToValidateExpressionsOfInterest()
     {
-        return $this->hasMany(\open20\amos\partnershipprofiles\models\ExpressionsOfInterest::className(), ['partnership_profile_id' => 'id'])
+        return $this->hasMany($this->partnerProfModule->model('ExpressionsOfInterest'), ['partnership_profile_id' => 'id'])
             ->andWhere([\open20\amos\partnershipprofiles\models\ExpressionsOfInterest::tableName() . '.status' => \open20\amos\partnershipprofiles\models\ExpressionsOfInterest::EXPRESSIONS_OF_INTEREST_WORKFLOW_STATUS_TOVALIDATE]);
     }
 
@@ -385,7 +402,7 @@ class PartnershipProfiles extends NotifyRecord implements CommunityInterface
      */
     public function getRelevantExpressionsOfInterest()
     {
-        return $this->hasMany(\open20\amos\partnershipprofiles\models\ExpressionsOfInterest::className(), ['partnership_profile_id' => 'id'])
+        return $this->hasMany($this->partnerProfModule->model('ExpressionsOfInterest'), ['partnership_profile_id' => 'id'])
             ->andWhere([\open20\amos\partnershipprofiles\models\ExpressionsOfInterest::tableName() . '.status' => \open20\amos\partnershipprofiles\models\ExpressionsOfInterest::EXPRESSIONS_OF_INTEREST_WORKFLOW_STATUS_RELEVANT]);
     }
 
@@ -394,7 +411,7 @@ class PartnershipProfiles extends NotifyRecord implements CommunityInterface
      */
     public function getRejectedExpressionsOfInterest()
     {
-        return $this->hasMany(\open20\amos\partnershipprofiles\models\ExpressionsOfInterest::className(), ['partnership_profile_id' => 'id'])
+        return $this->hasMany($this->partnerProfModule->model('ExpressionsOfInterest'), ['partnership_profile_id' => 'id'])
             ->andWhere([\open20\amos\partnershipprofiles\models\ExpressionsOfInterest::tableName() . '.status' => \open20\amos\partnershipprofiles\models\ExpressionsOfInterest::EXPRESSIONS_OF_INTEREST_WORKFLOW_STATUS_REJECTED]);
     }
 
@@ -403,7 +420,7 @@ class PartnershipProfiles extends NotifyRecord implements CommunityInterface
      */
     public function getNotDraftExpressionsOfInterest()
     {
-        return $this->hasMany(\open20\amos\partnershipprofiles\models\ExpressionsOfInterest::className(), ['partnership_profile_id' => 'id'])
+        return $this->hasMany($this->partnerProfModule->model('ExpressionsOfInterest'), ['partnership_profile_id' => 'id'])
             ->andWhere(['!=', \open20\amos\partnershipprofiles\models\ExpressionsOfInterest::tableName() . '.status', \open20\amos\partnershipprofiles\models\ExpressionsOfInterest::EXPRESSIONS_OF_INTEREST_WORKFLOW_STATUS_DRAFT]);
     }
 
@@ -412,7 +429,7 @@ class PartnershipProfiles extends NotifyRecord implements CommunityInterface
      */
     public function getPartnershipProfileFacilitator()
     {
-        return $this->hasOne(AmosAdmin::instance()->createModel('UserProfile')->className(), ['user_id' => 'partnership_profile_facilitator_id']);
+        return $this->hasOne(AmosAdmin::instance()->model('UserProfile'), ['user_id' => 'partnership_profile_facilitator_id']);
     }
 
     /**
