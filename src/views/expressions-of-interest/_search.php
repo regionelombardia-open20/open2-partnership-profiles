@@ -24,7 +24,7 @@ use yii\widgets\ActiveForm;
     
     <?php
     $form = ActiveForm::begin([
-        'action' => Yii::$app->controller->action->id,
+        'action' => Yii::$app->controller->action->id.'?partnership_profile_id='.$_GET['partnership_profile_id'],
         'method' => 'get',
         'options' => [
             'class' => 'default-form'

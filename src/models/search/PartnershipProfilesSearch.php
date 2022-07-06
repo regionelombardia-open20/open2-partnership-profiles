@@ -491,7 +491,7 @@ class PartnershipProfilesSearch extends PartnershipProfiles implements SearchMod
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\di\NotInstantiableException
      */
-    public function searchToValidate($params)
+    public function searchToValidate($params, $limit = null)
     {
         $query = $this->searchToValidateQuery($params);
         $dataProvider = new ActiveDataProvider([
