@@ -365,6 +365,7 @@ class PartnershipProfilesController extends CrudController
 
         $this->model   = $this->partnerProfModule->createModel('PartnershipProfiles');
         $okFacilitator = $this->setDefaultFacilitator();
+        $this->model->loadOtherCategories();
 
         Yii::$app->view->params['textHelp']['filename'] = 'expression_of_interest_description';
         $useUpdate                                      = true;
@@ -388,6 +389,8 @@ class PartnershipProfilesController extends CrudController
                     $validateOnSave      = false;
                     $useUpdate           = false;
                 }
+                $this->model->saveOtherCategories();
+
                 $attrPartnershipProfilesTypesMmPost = [];
                 if (!empty(\Yii::$app->request->post('PartnershipProfiles')['attrPartnershipProfilesTypesMm'])) {
                     $attrPartnershipProfilesTypesMmPost = \Yii::$app->request->post('PartnershipProfiles')['attrPartnershipProfilesTypesMm'];
@@ -453,6 +456,8 @@ class PartnershipProfilesController extends CrudController
         $this->setDefaultFacilitator();
         $this->model->attrPartnershipProfilesTypesMm     = $this->model->partnershipProfilesTypes;
         $this->model->attrPartnershipProfilesCountriesMm = $this->model->partnershipProfileCountries;
+        $this->model->loadOtherCategories();
+
 
         if ($this->model->load(Yii::$app->request->post()) && $this->model->validate()) {
             $attrPartnershipProfilesTypesMmPost = [];
@@ -466,6 +471,7 @@ class PartnershipProfilesController extends CrudController
             }
 
             if ($this->model->save()) {
+                $this->model->saveOtherCategories();
                 $okPartnershipProfileType      = $this->savePartnershipProfileTypes($attrPartnershipProfilesTypesMmPost);
                 $okPartnershipProfileCountries = $this->savePartnershipProfileCountries($attrPartnershipProfilesCountriesMmPost);
                 if ($okPartnershipProfileType && $okPartnershipProfileCountries) {

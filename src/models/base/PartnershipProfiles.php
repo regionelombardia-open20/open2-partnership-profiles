@@ -466,4 +466,18 @@ abstract class PartnershipProfiles extends ContentModel implements CommunityInte
     {
         return $this->hasMany(\open20\amos\community\models\CommunityUserMm::className(), ['community_id' => 'community_id']);
     }
+
+    /**
+     * news related news
+     */
+    public function getPartnershipProfilesCategoryMms()
+    {
+        return $this->hasMany(\open20\amos\partnershipprofiles\models\PartnershipProfilesCategoryMm::className(), ['partnership_profiles_id' => 'id']);
+    }
+
+    public function getOtherPartnershipCategories()
+    {
+        return $this->hasMany(\open20\amos\partnershipprofiles\models\PartnershipProfilesCategory::className(), ['id' => 'partnership_profiles_category_id'])->via('partnershipProfilesCategoryMms');
+
+    }
 }

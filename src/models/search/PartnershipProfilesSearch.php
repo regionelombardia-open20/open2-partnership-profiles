@@ -38,6 +38,7 @@ class PartnershipProfilesSearch extends PartnershipProfiles implements SearchMod
      * @var Container $container
      */
     private $container;
+    public $categories;
 
     /**
      * @inheritdoc
@@ -113,12 +114,13 @@ class PartnershipProfilesSearch extends PartnershipProfiles implements SearchMod
                 'intellectual_property_id',
                 'created_at',
                 'updated_at',
-                'deleted_at'
-                ], 'safe'],
+                'deleted_at',
+                'categories'
+            ], 'safe'],
             [[
                 'expiration_in_months',
                 'willingness_foreign_partners'
-                ], 'number']
+            ], 'number']
         ];
     }
 
@@ -186,7 +188,7 @@ class PartnershipProfilesSearch extends PartnershipProfiles implements SearchMod
      */
     protected function addSearchByTagsQueryPart($query, $params)
     {
-        $moduleTag                    = \Yii::$app->getModule('tag');
+        $moduleTag = \Yii::$app->getModule('tag');
         $partnershipProfilesClassname = $this->partnerProfModule->model('PartnershipProfiles');
         if (isset($moduleTag) && in_array($partnershipProfilesClassname, $moduleTag->modelsEnabled) && $moduleTag->behaviors) {
             if (isset($params[$this->formName()]['tagValues'])) {
@@ -194,16 +196,16 @@ class PartnershipProfilesSearch extends PartnershipProfiles implements SearchMod
                 $this->setTagValues($tagValues);
                 if (is_array($tagValues) && !empty($tagValues)) {
                     $andWhere = "";
-                    $i        = 0;
+                    $i = 0;
                     foreach ($tagValues as $rootId => $tagId) {
                         if (!empty($tagId)) {
                             if ($i == 0) {
-                                $query->innerJoin(EntitysTagsMm::tableName().' entities_tag',
-                                    "entities_tag.classname = '".addslashes($partnershipProfilesClassname)."' AND entities_tag.record_id = ".PartnershipProfiles::tableName().".id");
+                                $query->innerJoin(EntitysTagsMm::tableName() . ' entities_tag',
+                                    "entities_tag.classname = '" . addslashes($partnershipProfilesClassname) . "' AND entities_tag.record_id = " . PartnershipProfiles::tableName() . ".id");
                             } else {
                                 $andWhere .= " OR ";
                             }
-                            $andWhere .= "(entities_tag.tag_id in (".$tagId.") AND entities_tag.root_id = ".$rootId." AND entities_tag.deleted_at IS NULL)";
+                            $andWhere .= "(entities_tag.tag_id in (" . $tagId . ") AND entities_tag.root_id = " . $rootId . " AND entities_tag.deleted_at IS NULL)";
                             $i++;
                         }
                     }
@@ -222,8 +224,14 @@ class PartnershipProfilesSearch extends PartnershipProfiles implements SearchMod
      */
     public function baseFilter($query)
     {
-        $query->andFilterWhere(['like', self::tableName().'.title', $this->title])
-            ->andFilterWhere(['like', self::tableName().'.short_description', $this->short_description]);
+        $query->andFilterWhere(['like', self::tableName() . '.title', $this->title])
+            ->andFilterWhere(['like', self::tableName() . '.short_description', $this->short_description]);
+
+        if (!empty($this->categories)) {
+            $query
+                ->leftJoin('partnership_profiles_category_mm', 'partnership_profiles_category_mm.partnership_profiles_id = partnership_profiles.id')
+                ->andWhere(['partnership_profiles_category_mm.partnership_profiles_category_id' => $this->categories]);
+        }
 
         return $query;
     }
@@ -234,9 +242,9 @@ class PartnershipProfilesSearch extends PartnershipProfiles implements SearchMod
      */
     public function searchQuery($params)
     {
-        $query          = $this->baseSearch($params);
-        $classname      = $this->partnerProfModule->model('PartnershipProfiles');
-        $moduleCwh      = \Yii::$app->getModule('cwh');
+        $query = $this->baseSearch($params);
+        $classname = $this->partnerProfModule->model('PartnershipProfiles');
+        $moduleCwh = \Yii::$app->getModule('cwh');
         $cwhActiveQuery = null;
 
         if (isset($moduleCwh)) {
@@ -264,8 +272,8 @@ class PartnershipProfilesSearch extends PartnershipProfiles implements SearchMod
      */
     public function search($params, $queryType = null, $limit = null, $onlyDrafts = false, $pageSize = null)
     {
-        $query        = $this->searchQuery($params);
-       
+        $query = $this->searchQuery($params);
+
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
@@ -289,9 +297,9 @@ class PartnershipProfilesSearch extends PartnershipProfiles implements SearchMod
      */
     public function searchAllQuery($params)
     {
-        $query          = $this->baseSearch($params);
-        $classname      = $this->partnerProfModule->model('PartnershipProfiles');
-        $moduleCwh      = \Yii::$app->getModule('cwh');
+        $query = $this->baseSearch($params);
+        $classname = $this->partnerProfModule->model('PartnershipProfiles');
+        $moduleCwh = \Yii::$app->getModule('cwh');
         $cwhActiveQuery = null;
         if (isset($moduleCwh)) {
             /** @var \open20\amos\cwh\AmosCwh $moduleCwh */
@@ -307,7 +315,7 @@ class PartnershipProfilesSearch extends PartnershipProfiles implements SearchMod
         } else {
             $query->andWhere(['status' => [self::PARTNERSHIP_PROFILES_WORKFLOW_STATUS_VALIDATED, self::PARTNERSHIP_PROFILES_WORKFLOW_STATUS_FEEDBACKRECEIVED]]);
         }
-        
+
         return $query;
     }
 
@@ -319,7 +327,7 @@ class PartnershipProfilesSearch extends PartnershipProfiles implements SearchMod
      */
     public function searchAll($params, $limit = null)
     {
-        $query        = $this->searchAllQuery($params);
+        $query = $this->searchAllQuery($params);
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
@@ -391,9 +399,9 @@ class PartnershipProfilesSearch extends PartnershipProfiles implements SearchMod
      */
     public function searchCreatedByQuery($params)
     {
-        $query          = $this->baseSearch($params);
-        $classname      = $this->partnerProfModule->model('PartnershipProfiles');
-        $moduleCwh      = \Yii::$app->getModule('cwh');
+        $query = $this->baseSearch($params);
+        $classname = $this->partnerProfModule->model('PartnershipProfiles');
+        $moduleCwh = \Yii::$app->getModule('cwh');
         $cwhActiveQuery = null;
         if (isset($moduleCwh)) {
             /** @var \open20\amos\cwh\AmosCwh $moduleCwh */
@@ -407,7 +415,7 @@ class PartnershipProfilesSearch extends PartnershipProfiles implements SearchMod
         if ($isSetCwh) {
             $query = $cwhActiveQuery->getQueryCwhOwn();
         } else {
-            $query->andWhere([self::tableName().'.created_by' => \Yii::$app->user->getId()]);
+            $query->andWhere([self::tableName() . '.created_by' => \Yii::$app->user->getId()]);
         }
         return $query;
     }
@@ -445,9 +453,9 @@ class PartnershipProfilesSearch extends PartnershipProfiles implements SearchMod
      */
     public function searchToValidateQuery($params)
     {
-        $query          = $this->baseSearch($params);
-        $classname      = $this->partnerProfModule->model('PartnershipProfiles');
-        $moduleCwh      = \Yii::$app->getModule('cwh');
+        $query = $this->baseSearch($params);
+        $classname = $this->partnerProfModule->model('PartnershipProfiles');
+        $moduleCwh = \Yii::$app->getModule('cwh');
         $cwhActiveQuery = null;
 
         if (isset($moduleCwh)) {
@@ -475,7 +483,7 @@ class PartnershipProfilesSearch extends PartnershipProfiles implements SearchMod
      */
     public function searchToValidate($params, $limit = null)
     {
-        $query        = $this->searchToValidateQuery($params);
+        $query = $this->searchToValidateQuery($params);
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
@@ -631,7 +639,7 @@ class PartnershipProfilesSearch extends PartnershipProfiles implements SearchMod
      */
     public function latestPartenershipProfilesSearch($params, $limit = null)
     {
-        $dataProvider                       = $this->searchAll($params);
+        $dataProvider = $this->searchAll($params);
         $dataProvider->query->orderBy(['created_at' => SORT_DESC]);
         $dataProvider->pagination->pageSize = $limit;
         return $dataProvider;
@@ -647,7 +655,7 @@ class PartnershipProfilesSearch extends PartnershipProfiles implements SearchMod
     public function globalSearch($searchParamsArray, $pageSize = 5)
     {
         $dataProvider = $this->searchAll([]);
-        $pagination   = $dataProvider->getPagination();
+        $pagination = $dataProvider->getPagination();
         if (!$pagination) {
             $pagination = new Pagination();
             $dataProvider->setPagination($pagination);
@@ -655,13 +663,13 @@ class PartnershipProfilesSearch extends PartnershipProfiles implements SearchMod
         $pagination->setPageSize($pageSize);
 
         // Verifico se il modulo supporta i TAG e, in caso, ricerco anche fra quelli
-        $moduleTag       = \Yii::$app->getModule('tag');
+        $moduleTag = \Yii::$app->getModule('tag');
         $enableTagSearch = isset($moduleTag) && in_array($this->partnerProfModule->model('PartnershipProfiles'),
                 $moduleTag->modelsEnabled);
 
         if ($enableTagSearch) {
             $dataProvider->query->leftJoin('entitys_tags_mm e_tag',
-                "e_tag.record_id=".PartnershipProfiles::tableName().".id AND e_tag.deleted_at IS NULL AND e_tag.classname='".addslashes(PartnershipProfiles::className())."'");
+                "e_tag.record_id=" . PartnershipProfiles::tableName() . ".id AND e_tag.deleted_at IS NULL AND e_tag.classname='" . addslashes(PartnershipProfiles::className()) . "'");
 
 //            if (Yii::$app->db->schema->getTableSchema('tag__translation')) {
 //                // Esiste la tabella delle traduzioni dei TAG. Uso quella per la ricerca
@@ -676,16 +684,16 @@ class PartnershipProfilesSearch extends PartnershipProfiles implements SearchMod
         foreach ($searchParamsArray as $searchString) {
             $orQueries = [
                 'or',
-                ['like', self::tableName().'.title', $searchString],
-                ['like', self::tableName().'.short_description', $searchString],
-                ['like', self::tableName().'.extended_description', $searchString],
-                ['like', self::tableName().'.advantages_innovative_aspects', $searchString],
-                ['like', self::tableName().'.other_prospect_desired_collab', $searchString],
-                ['like', self::tableName().'.expected_contribution', $searchString],
-                ['like', self::tableName().'.contact_person', $searchString],
-                ['like', self::tableName().'.english_title', $searchString],
-                ['like', self::tableName().'.english_short_description', $searchString],
-                ['like', self::tableName().'.english_extended_description', $searchString],
+                ['like', self::tableName() . '.title', $searchString],
+                ['like', self::tableName() . '.short_description', $searchString],
+                ['like', self::tableName() . '.extended_description', $searchString],
+                ['like', self::tableName() . '.advantages_innovative_aspects', $searchString],
+                ['like', self::tableName() . '.other_prospect_desired_collab', $searchString],
+                ['like', self::tableName() . '.expected_contribution', $searchString],
+                ['like', self::tableName() . '.contact_person', $searchString],
+                ['like', self::tableName() . '.english_title', $searchString],
+                ['like', self::tableName() . '.english_short_description', $searchString],
+                ['like', self::tableName() . '.english_extended_description', $searchString],
             ];
 
             $tagsValues = \Yii::$app->request->get('tagValues');
@@ -720,17 +728,17 @@ class PartnershipProfilesSearch extends PartnershipProfiles implements SearchMod
 
     /**
      * @param object $model The model to convert into SearchResult
-     * @return SearchResult 
+     * @return SearchResult
      */
     public function convertToSearchResult($model)
     {
-        $searchResult                     = new SearchResult();
-        $searchResult->url                = $model->getFullViewUrl();
-        $searchResult->box_type           = "none";
-        $searchResult->id                 = $model->id;
-        $searchResult->titolo             = $model->title;
+        $searchResult = new SearchResult();
+        $searchResult->url = $model->getFullViewUrl();
+        $searchResult->box_type = "none";
+        $searchResult->id = $model->id;
+        $searchResult->titolo = $model->title;
         $searchResult->data_pubblicazione = $model->partnership_profile_date;
-        $searchResult->abstract           = $model->short_description;
+        $searchResult->abstract = $model->short_description;
         return $searchResult;
     }
 
@@ -769,11 +777,31 @@ class PartnershipProfilesSearch extends PartnershipProfiles implements SearchMod
         if (!empty($params["conditionSearch"])) {
             $commands = explode(";", $params["conditionSearch"]);
             foreach ($commands as $command) {
-                $query->andWhere(eval("return ".$command.";"));
+                if (strpos($command, 'partnership_profiles_categories_ids') !== false) {
+                    $this->cmsFilterCategories($command, $query);
+                } else {
+                    $query->andWhere(eval("return " . $command . ";"));
+                }
             }
         }
 
         return $dataProvider;
+    }
+
+    /**
+     * @param $command
+     * @param $query ActiveQuery
+     */
+    public function cmsFilterCategories($command, $query){
+        $explode = explode('=>',$command );
+        if(count($explode) == 2){
+            $val = trim($explode[1]);
+            $val = str_replace('[', '', $val);
+            $val = str_replace(']', '', $val);
+            $categoryIds = explode(',', $val);
+            $query->leftJoin('partnership_profiles_category_mm', 'partnership_profiles_category_mm.partnership_profiles_id = partnership_profiles.id')
+                ->andFilterWhere(['partnership_profiles_category_mm.partnership_profiles_category_id' => $categoryIds]);
+        }
     }
 
     /**
@@ -810,7 +838,7 @@ class PartnershipProfilesSearch extends PartnershipProfiles implements SearchMod
         if (!empty($params["conditionSearch"])) {
             $commands = explode(";", $params["conditionSearch"]);
             foreach ($commands as $command) {
-                $query->andWhere(eval("return ".$command.";"));
+                $query->andWhere(eval("return " . $command . ";"));
             }
         }
 

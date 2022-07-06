@@ -325,5 +325,11 @@ return [
     'Partnership Profiles Title' => 'Titolo',
     'Partnership Profiles Updated At' => 'Aggiornato il',
     'Partnership Profiles Partnership Profile Date' => 'Data',
+    "Categorie" => "Categorie",
+    "Gestisci le categorie" => "Gestisci le categorie",
+    "Le categorie" => "Le categorie",
+    "Crea una nuova categoria" => "Crea una nuova categoria",
+    'Color text' => "Colore testo",
+    'Color background' => "Colore di sfondo",
 
-    ];
+];

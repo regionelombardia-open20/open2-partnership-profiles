@@ -34,6 +34,8 @@ use kartik\datecontrol\DateControl;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\web\View;
+use open20\amos\partnershipprofiles\models\PartnershipProfilesCategoryRoles;
+
 
 /**
  * @var yii\web\View $this
@@ -88,6 +90,7 @@ $js = "
 $this->registerJs($js, View::POS_READY);
 
 $module = \Yii::$app->getModule('partnershipprofiles');
+$enableCategories = $module->enableCategories;
 $moduleCwh = \Yii::$app->getModule('cwh');
 $communityConfigurationsId = null;
 
@@ -117,14 +120,14 @@ $enabledTabs = !empty($module->fieldsCommunityConfigurations[$communityConfigura
 ?>
 
 <?php
-    echo WorkflowTransitionStateDescriptorWidget::widget([
-        'form' => $form,
-        'model' => $model,
-        'workflowId' => PartnershipProfiles::PARTNERSHIP_PROFILES_WORKFLOW,
-        'classDivIcon' => '',
-        'classDivMessage' => 'message',
-        'viewWidgetOnNewRecord' => false
-    ]);
+echo WorkflowTransitionStateDescriptorWidget::widget([
+    'form' => $form,
+    'model' => $model,
+    'workflowId' => PartnershipProfiles::PARTNERSHIP_PROFILES_WORKFLOW,
+    'classDivIcon' => '',
+    'classDivMessage' => 'message',
+    'viewWidgetOnNewRecord' => false
+]);
 ?>
 
 <div class="<?= Yii::$app->controller->id ?>-form">
@@ -215,6 +218,47 @@ $enabledTabs = !empty($module->fieldsCommunityConfigurations[$communityConfigura
                     <?= $form->field($model, 'other_prospect_desired_collab')->textInput(['maxlength' => true]) ?>
                 </div>
             </div>
+        <?php } ?>
+
+        <?php if ($enableCategories) { ?>
+            <?php $otherCategories = \open20\amos\partnershipprofiles\models\PartnershipProfilesCategory::find()
+                ->joinWith('partnershipProfilesCategoryRoles')
+                ->innerJoin('auth_assignment',
+                    'item_name=' . PartnershipProfilesCategoryRoles::tableName() . '.role and user_id =' . \Yii::$app->user->id)
+                ->andWhere(['partnership_profiles_category_roles.deleted_at' => null])
+                ->all();
+           ?>
+
+            <?php if (count($otherCategories) > 0) { ?>
+                <div class="col-md-12">
+                    <?= $form->field($model, 'otherCategories')->widget(\kartik\select2\Select2::className(), [
+                        'options' => [
+                            'placeholder' => Module::t('amospartnershipprofiles', 'Select...'),
+                            'id' => 'pp_categorie_mm_id-id',
+                            'multiple' => true,
+                        ],
+                        'pluginOptions' => [
+                            'allowClear' => true,
+                        ],
+                        'data' => ArrayHelper::map($otherCategories, 'id', 'title')
+                    ])->label(Module::t('amospartnershipprofiles', 'Categorie')) ?>
+                </div>
+            <?php } else { ?>
+                <div style="display:none" class="col-md-12">
+                    <?= $form->field($model, 'otherCategories')->widget(\kartik\select2\Select2::className(), [
+                        'options' => [
+                            'placeholder' => Module::t('amospartnershipprofiles', 'Select...'),
+                            'id' => 'pp_categorie_mm_id-id',
+                            'multiple' => true,
+                        ],
+                        'pluginOptions' => [
+                            'allowClear' => true,
+                        ],
+                        'data' => ArrayHelper::map($model->otherPartnershipCategories, 'id', 'title')
+                    ])->label(Module::t('amospartnershipprofiles', 'Categorie')) ?>
+                </div>
+            <?php } ?>
+
         <?php } ?>
 
     </div>
@@ -461,7 +505,7 @@ $enabledTabs = !empty($module->fieldsCommunityConfigurations[$communityConfigura
     ?>
 
     <?php
-        $statusToRenderToHide = $model->getStatusToRenderToHide();      
+    $statusToRenderToHide = $model->getStatusToRenderToHide();
     ?>
 
     <?=

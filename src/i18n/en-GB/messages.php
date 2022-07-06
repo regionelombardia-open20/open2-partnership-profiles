@@ -353,4 +353,13 @@ return [
     "Tutte le proposte di mio interesse" => "All proposals of interest",
     "Visualizza tutte le proposte" => "Show all proposals",
     "Non ci sono contenuti che corrispondono ai tuoi interessi" => "No contents that match with your interests",
+    "Categorie" => "Categories",
+    "Gestisci le categorie" => "Manage the categories",
+    "Le categorie" => "The categories",
+    "Crea una nuova categoria" => "Create a new category",
+    'Titolo' => 'Title',
+    'Sottotitolo' => "Subtitle",
+    'Descrizione breve' => "Short description",
+    'Descrizione' => "Description",
+
 ];

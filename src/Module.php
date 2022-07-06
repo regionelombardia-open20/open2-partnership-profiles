@@ -157,6 +157,13 @@ class Module extends AmosModule implements ModuleInterface, SearchModuleInterfac
      */
     public $pluginCustomIcon = '';
 
+    public $enableCategories = false;
+    /**
+     * @var array
+     */
+    public $whiteListRolesCategories = ['ADMIN', 'BASIC_USER'];
+
+
     /**
      * @return string
      */
@@ -326,6 +333,7 @@ class Module extends AmosModule implements ModuleInterface, SearchModuleInterfac
     {
         return [
             'partnership-proposal' => '/partnershipprofiles/partnership-profiles/own-interest',
+            'partnership-profiles-category' => '/partnershipprofiles/partnership-profiles-category/index',
             'expressions-of-interest' => '/partnershipprofiles/expressions-of-interest/created-by'
 
         ];
@@ -338,7 +346,8 @@ class Module extends AmosModule implements ModuleInterface, SearchModuleInterfac
     {
         return [
             'partnership-proposal' => '/partnershipprofiles/partnership-profiles/index',
-            'expressions-of-interest' => '/partnershipprofiles/expressions-of-interest/created-by'
+            'expressions-of-interest' => '/partnershipprofiles/expressions-of-interest/created-by',
+            'partnership-profiles-category' => '/partnershipprofiles/partnership-profiles/index'
 
         ];
     }
@@ -351,6 +360,7 @@ class Module extends AmosModule implements ModuleInterface, SearchModuleInterfac
         $names =  [
             'partnership-profiles' => self::t('amospartnershipprofiles', 'Partnership Profiles'),
             'expressions-of-interest'  => self::t('amospartnershipprofiles', 'Expressions Of Interest'),
+            'partnership-profiles-category'  => self::t('amospartnershipprofiles', 'Categorie proposte di collaborazione'),
         ];
 
         return $names;

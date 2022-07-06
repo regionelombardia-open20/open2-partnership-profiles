@@ -323,4 +323,8 @@ return [
     '#collaborazione-tecnica' => 'Technical collaboration',
     '#joint-venture' => 'Joint Venture',
     '#subfornitura' => 'Subcontracting',
+    'Titolo' => 'Title',
+    'Sottotitolo' => "Subtitle",
+    'Descrizione breve' => "Short description",
+    'Descrizione' => "Description",
 ];

@@ -33,6 +33,7 @@ use kartik\datecontrol\DateControl;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\web\View;
+use open20\amos\partnershipprofiles\models\PartnershipProfilesCategoryRoles;
 
 /**
  * @var yii\web\View $this
@@ -89,6 +90,7 @@ $this->registerJs($js, View::POS_READY);
 
 $module = \Yii::$app->getModule('partnershipprofiles');
 $moduleCwh = \Yii::$app->getModule('cwh');
+$enableCategories = $module->enableCategories;
 $communityConfigurationsId = null;
 
 if (isset($moduleCwh) && !empty($moduleCwh->getCwhScope())) {
@@ -213,6 +215,28 @@ $enabledTabs = !empty($module->fieldsCommunityConfigurations[$communityConfigura
                 <div>
                     <?= $form->field($model, 'other_prospect_desired_collab')->textInput(['maxlength' => true]) ?>
                 </div>
+            </div>
+        <?php } ?>
+
+        <?php if ($enableCategories) {?>
+            <?php $otherCategoriesQuery = \open20\amos\partnershipprofiles\models\PartnershipProfilesCategory::find()
+                  ->joinWith('partnershipProfilesCategoryRoles')
+                ->innerJoin('auth_assignment',
+                      'item_name='.PartnershipProfilesCategoryRoles::tableName().'.role and user_id ='.\Yii::$app->user->id)
+                ->all();?>
+
+            <div class="col-md-12">
+                <?= $form->field($model, 'otherCategories')->widget(Select2::className(), [
+                    'options' => [
+                        'placeholder' => Module::t('amospartnershipprofiles', 'Select...'),
+                        'id' => 'pp_categorie_mm_id-id',
+                        'multiple' => true,
+                    ],
+                    'pluginOptions' => [
+                        'allowClear' => true,
+                    ],
+                    'data' => ArrayHelper::map($otherCategoriesQuery, 'id', 'title')
+                ])->label(Module::t('amospartnershipprofiles', 'Categorie')) ?>
             </div>
         <?php } ?>
 

@@ -82,6 +82,8 @@ class PartnershipProfiles extends \open20\amos\partnershipprofiles\models\base\P
         self::PARTNERSHIP_PROFILES_WORKFLOW_STATUS_FEEDBACKRECEIVED
     ];
 
+    public $otherCategories;
+
     /**
      * @inheritdoc
      */
@@ -121,6 +123,7 @@ class PartnershipProfiles extends \open20\amos\partnershipprofiles\models\base\P
         return ArrayHelper::merge(parent::rules(), [
             [['partnershipProfileAttachments'], 'file', 'maxFiles' => 0],
             [['partnership_profile_facilitator_id'], 'validateFacilitator'],
+            [['otherCategories'], 'safe'],
         ]);
     }
 
@@ -646,5 +649,31 @@ class PartnershipProfiles extends \open20\amos\partnershipprofiles\models\base\P
             $hideDraftStatus[] = self::PARTNERSHIP_PROFILES_WORKFLOW_STATUS_VALIDATED;
         }
         return ['statusToRender' => $statusToRender, 'hideDraftStatus' => $hideDraftStatus];
+    }
+
+    /**
+     *
+     */
+    public function saveOtherCategories(){
+        $module = \Yii::$app->getModule('partnershipprofiles');
+        if($module = $module->enableCategories) {
+            $otherCategories = $this->otherCategories;
+            PartnershipProfilesCategoryMm::deleteAll(['partnership_profiles_id' => $this->id]);
+            foreach ($otherCategories as $category_id) {
+                $categoryMm = new PartnershipProfilesCategoryMm();
+                $categoryMm->partnership_profiles_category_id = $category_id;
+                $categoryMm->partnership_profiles_id = $this->id;
+                $categoryMm->save(false);
+            }
+        }
+    }
+
+    /**
+     *
+     */
+    public function loadOtherCategories(){
+        $otherCategories = $this->otherPartnershipCategories;
+        $this->otherCategories = $otherCategories;
+
     }
 }
