@@ -69,7 +69,7 @@ class ExpressionsOfInterestUtility extends BaseObject
         if (!is_null($moduleCwh)) {
             /** @var \open20\amos\cwh\AmosCwh $moduleCwh */
             /** @var AmosAdmin $moduleAdmin */
-            $moduleAdmin = \Yii::$app->getModule('admin');
+            $moduleAdmin = \Yii::$app->getModule(AmosAdmin::getModuleName());
             $moduleOrganizations = \Yii::$app->getModule($moduleAdmin->getOrganizationModuleName());
             if (!is_null($moduleOrganizations) && (($moduleOrganizations instanceof AdminOrgInterface) || ($moduleOrganizations instanceof CoreOrgInterface))) {
                 /** @var AdminOrgInterface|CoreOrgInterface $moduleOrganizations */
@@ -118,7 +118,7 @@ class ExpressionsOfInterestUtility extends BaseObject
     if (!is_null($moduleCwh)) {
         /** @var \open20\amos\cwh\AmosCwh $moduleCwh */
         /** @var AmosAdmin $moduleAdmin */
-        $moduleAdmin = \Yii::$app->getModule('admin');
+        $moduleAdmin = \Yii::$app->getModule(AmosAdmin::getModuleName());
         $moduleOrganizations = \Yii::$app->getModule($moduleAdmin->getOrganizationModuleName());
         if (!is_null($moduleOrganizations) && (($moduleOrganizations instanceof AdminOrgInterface) || ($moduleOrganizations instanceof CoreOrgInterface))) {
             /** @var AdminOrgInterface|CoreOrgInterface $moduleOrganizations */

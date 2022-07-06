@@ -26,28 +26,31 @@ $statesCounter = $model->getExpressionsOfInterestStatesCounter();
 $appController = Yii::$app->controller;
 
 ?>
-<div class="sidebar col-sm-5 col-xs-12">
-    <h4 class="title">
+<div class="col-md-5 col-xs-12">
+    <h4 class="title m-t-0 m-b-0">
         <?= $statesCounter['notdraft'] ?>
+        
         <?= (($statesCounter['notdraft'] == 1) ?
             Module::tHtml('amospartnershipprofiles', '#expression_of_interest_sidebar') :
             Module::tHtml('amospartnershipprofiles', '#expressions_of_interest_sidebar')
         ) ?>
+       
         <?php if (\Yii::$app->user->can(ReadAllExprOfIntRule::className(), ['model' => $model])): ?>
             <?= '(' . Html::a(
                 Module::tHtml('amospartnershipprofiles', 'view all'),
                 ['/partnershipprofiles/expressions-of-interest/all', 'partnership_profile_id' => $model->id],
                 ['class' => ' ']
             ) . ')'; ?>
+           
         <?php endif; ?>
     </h4>
     <div class="container-sidebar">
         <div class="box">
             <div class="media">
                 <div class="media-left">
-                    <p class="number-participants"><?= $statesCounter['active'] ?></p>
+                    <p class="h1 number-participants"><?= $statesCounter['active'] ?></p>
                 </div>
-                <div class="media-body">
+                <div class="media-body" style="border-left: 1px solid #000;padding-left: 15px;">
                     <h4 class="media-heading"><?= Module::tHtml('amospartnershipprofiles', '#active_sidebar') ?></h4>
                     <?= Module::tHtml('amospartnershipprofiles', 'Number of submitted expressions of interest') ?>
                 </div>
@@ -55,9 +58,9 @@ $appController = Yii::$app->controller;
 
             <div class="media">
                 <div class="media-left">
-                    <p class="number-participants"><?= $statesCounter['tovalidate'] ?></p>
+                    <p class="h1 number-participants"><?= $statesCounter['tovalidate'] ?></p>
                 </div>
-                <div class="media-body">
+                <div class="media-body" style="border-left: 1px solid #000;padding-left: 15px;">
                     <h4 class="media-heading"><?= Module::tHtml('amospartnershipprofiles', '#in_assessment_sidebar') ?></h4>
                     <?= Module::tHtml('amospartnershipprofiles', 'Number of expressions of interest in assessment') ?>
                 </div>
@@ -65,9 +68,9 @@ $appController = Yii::$app->controller;
 
             <div class="media">
                 <div class="media-left">
-                    <p class="number-participants"><?= $statesCounter['relevant'] ?></p>
+                    <p class="h1 number-participants"><?= $statesCounter['relevant'] ?></p>
                 </div>
-                <div class="media-body">
+                <div class="media-body" style="border-left: 1px solid #000;padding-left: 15px;">
                     <h4 class="media-heading"><?= Module::tHtml('amospartnershipprofiles', '#relevant_sidebar') ?></h4>
                     <?= Module::tHtml('amospartnershipprofiles', 'Number of relevant expressions of interest') ?>
                 </div>
@@ -75,9 +78,9 @@ $appController = Yii::$app->controller;
 
             <div class="media">
                 <div class="media-left">
-                    <p class="number-participants"><?= $statesCounter['rejected'] ?></p>
+                    <p class="h1 number-participants"><?= $statesCounter['rejected'] ?></p>
                 </div>
-                <div class="media-body">
+                <div class="media-body" style="border-left: 1px solid #000;padding-left: 15px;">
                     <h4 class="media-heading"><?= Module::tHtml('amospartnershipprofiles', '#rejected_sidebar') ?></h4>
                     <?= Module::tHtml('amospartnershipprofiles', 'Number of rejected expressions of interest') ?>
                 </div>

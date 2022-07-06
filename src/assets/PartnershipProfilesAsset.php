@@ -49,7 +49,7 @@ class PartnershipProfilesAsset extends AssetBundle
     public function init()
     {
         if(!empty(\Yii::$app->params['dashboardEngine']) && \Yii::$app->params['dashboardEngine'] == WidgetAbstract::ENGINE_ROWS){
-            $this->css = ['less/partnership-profiles_fullsize.less'];
+            $this->css = ['less/partnership-profiles_fullsize.less','less/partnership-profiles-bi.less'];
         }
 
         parent::init();

@@ -59,7 +59,7 @@ $appController = Yii::$app->controller;
                     <div class="post-info">
                         <div>
                             <label><?= $model->getAttributeLabel('status') ?>:</label>
-                            <?= $model->getWorkflowStatus()->getLabel() ?>
+                            <?= Module::t('amospartnershipprofiles', $model->getWorkflowStatus()->getLabel()) ?>
                         </div>
                         <div>
                             <label><?= Module::tHtml('amospartnershipprofiles', 'Creator') ?>:</label>

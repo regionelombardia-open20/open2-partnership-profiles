@@ -222,7 +222,7 @@ abstract class PartnershipProfiles extends ContentModel implements CommunityInte
             ],  StringHtmlValidator::className(), 'max' => 400];
             $rules[] = [[
                 'english_short_description'
-            ],  'string', 'max' => 255];
+            ],  StringHtmlValidator::className(), 'max' => 255];
             $rules[] = [[
                 'extended_description'
             ],  StringHtmlValidator::className(), 'min' => 1000];
@@ -294,6 +294,9 @@ abstract class PartnershipProfiles extends ContentModel implements CommunityInte
             'attrPartnershipProfilesTypesMm' => Module::t('amospartnershipprofiles', 'Partnership Profiles Types'),
 
             'attrPartnershipProfilesCountriesMm' => Module::t('amospartnershipprofiles', 'Countries'),
+            'partnership_profiles.partnership_profile_date' =>  Module::t('amospartnershipprofiles', 'Partnership Profiles Partnership Profile Date'),
+            'partnership_profiles.updated_at' =>  Module::t('amospartnershipprofiles', 'Partnership Profiles Updated At'),
+            'partnership_profiles.title' =>  Module::t('amospartnershipprofiles', 'Title'),
 
             'work_language_id' => Module::t('amospartnershipprofiles', 'Work Language ID'),
             'workLanguage' => Module::t('amospartnershipprofiles', 'Work Language'),

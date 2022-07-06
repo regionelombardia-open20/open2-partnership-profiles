@@ -149,7 +149,8 @@ class ExpressionsOfInterestController extends CrudController
         Yii::$app->view->params['breadcrumbs'] = [
             ['label' => $pageTitle]
         ];
-    }
+        $this->view->params['titleSection'] = $pageTitle;
+        }
 
     /**
      * Set a view param used in \open20\amos\core\forms\CreateNewButtonWidget

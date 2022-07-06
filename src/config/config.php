@@ -26,7 +26,7 @@ return [
             'partnership-profiles' => [
                 'enable' => true,
                 'fields' => [
-                    'title',
+                    'partnership_profiles.title',
                     'updated_at',
 //                    'short_description',
                     'partnership_profile_date',

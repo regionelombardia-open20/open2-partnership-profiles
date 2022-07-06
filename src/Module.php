@@ -11,6 +11,8 @@
 
 namespace open20\amos\partnershipprofiles;
 
+use open20\amos\core\interfaces\CmsModuleInterface;
+use open20\amos\core\interfaces\BreadcrumbInterface;
 use open20\amos\core\interfaces\SearchModuleInterface;
 use open20\amos\core\module\AmosModule;
 use open20\amos\core\module\ModuleInterface;
@@ -34,7 +36,7 @@ use yii\console\Application;
  * Class Module
  * @package open20\amos\partnershipprofiles
  */
-class Module extends AmosModule implements ModuleInterface, SearchModuleInterface
+class Module extends AmosModule implements ModuleInterface, SearchModuleInterface, CmsModuleInterface, BreadcrumbInterface
 {
     const MAX_LAST_PARTNERSHIP_ON_DASHBOARD = 3;
 
@@ -292,5 +294,65 @@ class Module extends AmosModule implements ModuleInterface, SearchModuleInterfac
     public static function beginCreateNewSessionKeyExprOfIntDateTime()
     {
         return 'beginCreateNewUrlDateTime_expressions_of_interest';
+    }
+
+    /**
+     * @return array
+     */
+    public function getIndexActions(){
+        return [
+            'partnership-profiles/index',
+            'partnership-profiles/all-admin',
+            'partnership-profiles/own-interest',
+            'partnership-profiles/created-by',
+            'partnership-profiles/closed',
+            'partnership-profiles/to-validate',
+            'partnership-profiles/facilitator-partnership-profiles',
+
+            'expressions-of-interest/index',
+            'expressions-of-interest/received',
+            'expressions-of-interest/created-by',
+            'expressions-of-interest/facilitator-expressions-of-interest',
+            'expressions-of-interest/all',
+            'expressions-of-interest/all-admin',
+        ];
+    }
+
+
+    /**
+     * @return array
+     */
+    public function defaultControllerIndexRoute()
+    {
+        return [
+            'partnership-proposal' => '/partnershipprofiles/partnership-profiles/own-interest',
+            'expressions-of-interest' => '/partnershipprofiles/expressions-of-interest/created-by'
+
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function defaultControllerIndexRouteSlogged()
+    {
+        return [
+            'partnership-proposal' => '/partnershipprofiles/partnership-profiles/index',
+            'expressions-of-interest' => '/partnershipprofiles/expressions-of-interest/created-by'
+
+        ];
+    }
+
+
+    /**
+     * @return array
+     */
+    public function getControllerNames(){
+        $names =  [
+            'partnership-profiles' => self::t('amospartnershipprofiles', 'Partnership Profiles'),
+            'expressions-of-interest'  => self::t('amospartnershipprofiles', 'Expressions Of Interest'),
+        ];
+
+        return $names;
     }
 }

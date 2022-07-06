@@ -22,7 +22,7 @@ use open20\amos\workflow\widgets\WorkflowTransitionButtonsWidget;
 use open20\amos\partnershipprofiles\utility\ExpressionsOfInterestUtility;
 use open20\amos\partnershipprofiles\models\PartnershipProfiles;
 use open20\amos\core\helpers\Html;
-use yii\redactor\widgets\Redactor;
+use open20\amos\core\forms\TextEditorWidget;
 
 /**
  * @var yii\web\View $this
@@ -70,44 +70,44 @@ $onlyOneOrganization = $module->enableOnlyOneOrganization;
     <?= $this->render('parts/partnership_profile_title', ['model' => $model]) ?>
     <div class="row">
         <div class="col-xs-12">
-            <?= $form->field($model, 'partnership_offered')->widget(Redactor::className(), [
-                'clientOptions' => [
-                    'plugins' => ['clips', 'fontcolor', 'imagemanager'],
-                    'buttonsHide' => [
-                        'image',
-                        'file'
+            <?= $form->field($model, 'partnership_offered')->widget(TextEditorWidget::className(),
+                    [
+                    'clientOptions' => [
+                        'lang' => substr(Yii::$app->language, 0, 2),
+                        'plugins' => [
+                            "paste link",
+                        ],
+                        'toolbar' => "undo redo | link",
                     ],
-                    'lang' => substr(Yii::$app->language, 0, 2)
-                ]
-            ]) ?>
+                ]); ?>
         </div>
     </div>
     <div class="row">
         <div class="col-xs-12">
-            <?= $form->field($model, 'additional_information')->widget(Redactor::className(), [
-                'clientOptions' => [
-                    'plugins' => ['clips', 'fontcolor', 'imagemanager'],
-                    'buttonsHide' => [
-                        'image',
-                        'file'
+            <?= $form->field($model, 'additional_information')->widget(TextEditorWidget::className(),
+                    [
+                    'clientOptions' => [
+                        'lang' => substr(Yii::$app->language, 0, 2),
+                        'plugins' => [
+                            "paste link",
+                        ],
+                        'toolbar' => "undo redo | link",
                     ],
-                    'lang' => substr(Yii::$app->language, 0, 2)
-                ]
-            ]) ?>
+                ]); ?>
         </div>
     </div>
     <div class="row">
         <div class="col-xs-12">
-            <?= $form->field($model, 'clarifications')->widget(Redactor::className(), [
-                'clientOptions' => [
-                    'plugins' => ['clips', 'fontcolor', 'imagemanager'],
-                    'buttonsHide' => [
-                        'image',
-                        'file'
+            <?= $form->field($model, 'clarifications')->widget(TextEditorWidget::className(),
+                    [
+                    'clientOptions' => [
+                        'lang' => substr(Yii::$app->language, 0, 2),
+                        'plugins' => [
+                            "paste link",
+                        ],
+                        'toolbar' => "undo redo | link",
                     ],
-                    'lang' => substr(Yii::$app->language, 0, 2)
-                ]
-            ]) ?>
+                ]); ?>
         </div>
     </div>
     <?php if($onlyOneOrganization) {

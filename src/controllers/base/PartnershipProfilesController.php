@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Aria S.p.A.
  * OPEN 2.0
@@ -38,11 +37,11 @@ use yii\web\ForbiddenHttpException;
  */
 class PartnershipProfilesController extends CrudController
 {
+
     /**
      * Trait used for initialize the news dashboard
      */
     use TabDashboardControllerTrait;
-
     /**
      * @var Module $partnerProfModule
      */
@@ -62,13 +61,13 @@ class PartnershipProfilesController extends CrudController
 
         $this->viewList = [
             'name' => 'list',
-            'label' => AmosIcons::show('view-list') . Html::tag('p', Module::tHtml('amospartnershipprofiles', 'List')),
+            'label' => AmosIcons::show('view-list').Html::tag('p', Module::tHtml('amospartnershipprofiles', 'List')),
             'url' => '?currentView=list'
         ];
 
         $this->viewGrid = [
             'name' => 'grid',
-            'label' => AmosIcons::show('view-list-alt') . Html::tag('p', Module::tHtml('amospartnershipprofiles', 'Table')),
+            'label' => AmosIcons::show('view-list-alt').Html::tag('p', Module::tHtml('amospartnershipprofiles', 'Table')),
             'url' => '?currentView=grid'
         ];
 
@@ -115,7 +114,7 @@ class PartnershipProfilesController extends CrudController
      */
     public function setTitleAndBreadcrumbs($pageTitle)
     {
-        Yii::$app->view->title = $pageTitle;
+        Yii::$app->view->title                 = $pageTitle;
         Yii::$app->view->params['breadcrumbs'] = [
             ['label' => $pageTitle]
         ];
@@ -226,10 +225,10 @@ class PartnershipProfilesController extends CrudController
 
             foreach ($attrMmPost as $attrId) {
                 /** @var \open20\amos\core\record\Record $attrMmModel */
-                $attrMmModel = new $modelClassName();
+                $attrMmModel                      = new $modelClassName();
                 $attrMmModel->{$thisModelIdField} = $this->model->id;
-                $attrMmModel->{$otherIdField} = $attrId;
-                $ok = $attrMmModel->save(false);
+                $attrMmModel->{$otherIdField}     = $attrId;
+                $ok                               = $attrMmModel->save(false);
                 if (!$ok) {
                     $allOk = false;
                 }
@@ -250,10 +249,8 @@ class PartnershipProfilesController extends CrudController
             $attrPost = [$attrPost];
         }
         return $this->saveMmsFields(
-            $attrPost,
-            PartnershipProfilesTypesMm::className(),
-            'partnership_profile_id',
-            'partnership_profiles_type_id'
+                $attrPost, PartnershipProfilesTypesMm::className(), 'partnership_profile_id',
+                'partnership_profiles_type_id'
         );
     }
 
@@ -268,10 +265,7 @@ class PartnershipProfilesController extends CrudController
             $attrPost = [$attrPost];
         }
         return $this->saveMmsFields(
-            $attrPost,
-            PartnershipProfilesCountriesMm::className(),
-            'partnership_profile_id',
-            'country_id'
+                $attrPost, PartnershipProfilesCountriesMm::className(), 'partnership_profile_id', 'country_id'
         );
     }
 
@@ -312,7 +306,7 @@ class PartnershipProfilesController extends CrudController
         Url::remember();
 
         Yii::$app->view->params['textHelp']['filename'] = 'partnership_dashboard_description';
-        $modelSearch = $this->modelSearch;
+        $modelSearch                                    = $this->modelSearch;
         if (\Yii::$app->getModule('notify')) {
             $modelSearch->setNotifier(\Yii::$app->getModule('notify'));
         }
@@ -365,28 +359,30 @@ class PartnershipProfilesController extends CrudController
     {
         $this->setUpLayout('form');
 
-        $this->model = $this->partnerProfModule->createModel('PartnershipProfiles');
+        $this->model   = $this->partnerProfModule->createModel('PartnershipProfiles');
         $okFacilitator = $this->setDefaultFacilitator();
 
-        Yii::$app->view->params['textHelp']['filename'] = 'expression_of_interest_description';        
-
+        Yii::$app->view->params['textHelp']['filename'] = 'expression_of_interest_description';
+        $useUpdate                                      = true;
         if ($this->model->load(Yii::$app->request->post()) && $this->model->validate()) {
             if ($okFacilitator) {
-            $validateOnSave = true;
+                $validateOnSave = true;
                 if ($this->model->status == PartnershipProfiles::PARTNERSHIP_PROFILES_WORKFLOW_STATUS_TOVALIDATE) {
-                    $this->model->status  = PartnershipProfiles::PARTNERSHIP_PROFILES_WORKFLOW_STATUS_DRAFT;
+                    $this->model->status = PartnershipProfiles::PARTNERSHIP_PROFILES_WORKFLOW_STATUS_DRAFT;
                     $this->model->save();
-                    $this->model->status  = PartnershipProfiles::PARTNERSHIP_PROFILES_WORKFLOW_STATUS_TOVALIDATE;
-                    $validateOnSave = false;
+                    $this->model->status = PartnershipProfiles::PARTNERSHIP_PROFILES_WORKFLOW_STATUS_TOVALIDATE;
+                    $validateOnSave      = false;
+                    $useUpdate           = false;
                 }
 
                 if ($this->model->status == PartnershipProfiles::PARTNERSHIP_PROFILES_WORKFLOW_STATUS_VALIDATED) {
-                    $this->model->status  = PartnershipProfiles::PARTNERSHIP_PROFILES_WORKFLOW_STATUS_DRAFT;
+                    $this->model->status = PartnershipProfiles::PARTNERSHIP_PROFILES_WORKFLOW_STATUS_DRAFT;
                     $this->model->save();
-                    $this->model->status  = PartnershipProfiles::PARTNERSHIP_PROFILES_WORKFLOW_STATUS_TOVALIDATE;
+                    $this->model->status = PartnershipProfiles::PARTNERSHIP_PROFILES_WORKFLOW_STATUS_TOVALIDATE;
                     $this->model->save();
-                    $this->model->status  = PartnershipProfiles::PARTNERSHIP_PROFILES_WORKFLOW_STATUS_VALIDATED;
-                    $validateOnSave = false;
+                    $this->model->status = PartnershipProfiles::PARTNERSHIP_PROFILES_WORKFLOW_STATUS_VALIDATED;
+                    $validateOnSave      = false;
+                    $useUpdate           = false;
                 }
                 $attrPartnershipProfilesTypesMmPost = [];
                 if (!empty(\Yii::$app->request->post('PartnershipProfiles')['attrPartnershipProfilesTypesMm'])) {
@@ -397,31 +393,43 @@ class PartnershipProfilesController extends CrudController
                     $attrPartnershipProfilesCountriesMmPost = \Yii::$app->request->post('PartnershipProfiles')['attrPartnershipProfilesCountriesMm'];
                 }
                 if ($this->model->save($validateOnSave)) {
-                    $okPartnershipProfileType = $this->savePartnershipProfileTypes($attrPartnershipProfilesTypesMmPost);
+                    $okPartnershipProfileType      = $this->savePartnershipProfileTypes($attrPartnershipProfilesTypesMmPost);
                     $okPartnershipProfileCountries = $this->savePartnershipProfileCountries($attrPartnershipProfilesCountriesMmPost);
                     if ($okPartnershipProfileType && $okPartnershipProfileCountries) {
-                        Yii::$app->getSession()->addFlash('success', Module::tHtml('amospartnershipprofiles', 'Element successfully created.'));
+                        Yii::$app->getSession()->addFlash('success',
+                            Module::tHtml('amospartnershipprofiles', 'Element successfully created.'));
                     } else if (!$okPartnershipProfileType && $okPartnershipProfileCountries) {
-                        Yii::$app->getSession()->addFlash('danger', Module::tHtml('amospartnershipprofiles', '#error_saving_partnership_profile_type'));
+                        Yii::$app->getSession()->addFlash('danger',
+                            Module::tHtml('amospartnershipprofiles', '#error_saving_partnership_profile_type'));
                     } else if ($okPartnershipProfileType && !$okPartnershipProfileCountries) {
-                        Yii::$app->getSession()->addFlash('danger', Module::tHtml('amospartnershipprofiles', '#error_saving_partnership_profile_countries'));
+                        Yii::$app->getSession()->addFlash('danger',
+                            Module::tHtml('amospartnershipprofiles', '#error_saving_partnership_profile_countries'));
                     } else if (!$okPartnershipProfileType && !$okPartnershipProfileCountries) {
-                        Yii::$app->getSession()->addFlash('danger', Module::tHtml('amospartnershipprofiles', '#error_saving_partnership_profile_countries_and_types'));
+                        Yii::$app->getSession()->addFlash('danger',
+                            Module::tHtml('amospartnershipprofiles',
+                                '#error_saving_partnership_profile_countries_and_types'));
                     }
-                    return $this->redirect(['update', 'id' => $this->model->id]);
+                    if ($useUpdate) {
+                        return $this->redirect(['update', 'id' => $this->model->id]);
+                    } else {
+                        return $this->redirect(['view', 'id' => $this->model->id]);
+                    }
                 } else {
-                    Yii::$app->getSession()->addFlash('danger', Module::tHtml('amospartnershipprofiles', 'Element not created, check the data entered.'));
+                    Yii::$app->getSession()->addFlash('danger',
+                        Module::tHtml('amospartnershipprofiles', 'Element not created, check the data entered.'));
                 }
             } else {
-                Yii::$app->getSession()->addFlash('danger', Module::tHtml('amospartnershipprofiles', 'Error with partnership profile facilitator'));
+                Yii::$app->getSession()->addFlash('danger',
+                    Module::tHtml('amospartnershipprofiles', 'Error with partnership profile facilitator'));
             }
         }
 
-        return $this->render('create', [
-            'model' => $this->model,
-            'fid' => null,
-            'dataField' => null,
-            'dataEntity' => null
+        return $this->render('create',
+                [
+                'model' => $this->model,
+                'fid' => null,
+                'dataField' => null,
+                'dataEntity' => null
         ]);
     }
 
@@ -436,10 +444,10 @@ class PartnershipProfilesController extends CrudController
     {
         $this->setUpLayout('form');
 
-        Yii::$app->view->params['textHelp']['filename'] = 'expression_of_interest_description';
-        $this->model = $this->findModel($id);
+        Yii::$app->view->params['textHelp']['filename']  = 'expression_of_interest_description';
+        $this->model                                     = $this->findModel($id);
         $this->setDefaultFacilitator();
-        $this->model->attrPartnershipProfilesTypesMm = $this->model->partnershipProfilesTypes;
+        $this->model->attrPartnershipProfilesTypesMm     = $this->model->partnershipProfilesTypes;
         $this->model->attrPartnershipProfilesCountriesMm = $this->model->partnershipProfileCountries;
 
         if ($this->model->load(Yii::$app->request->post()) && $this->model->validate()) {
@@ -454,16 +462,20 @@ class PartnershipProfilesController extends CrudController
             }
 
             if ($this->model->save()) {
-                $okPartnershipProfileType = $this->savePartnershipProfileTypes($attrPartnershipProfilesTypesMmPost);
+                $okPartnershipProfileType      = $this->savePartnershipProfileTypes($attrPartnershipProfilesTypesMmPost);
                 $okPartnershipProfileCountries = $this->savePartnershipProfileCountries($attrPartnershipProfilesCountriesMmPost);
                 if ($okPartnershipProfileType && $okPartnershipProfileCountries) {
-                    Yii::$app->getSession()->addFlash('success', Module::tHtml('amospartnershipprofiles', 'Element successfully updated.'));
+                    Yii::$app->getSession()->addFlash('success',
+                        Module::tHtml('amospartnershipprofiles', 'Element successfully updated.'));
                 } else if (!$okPartnershipProfileType && $okPartnershipProfileCountries) {
-                    Yii::$app->getSession()->addFlash('danger', Module::tHtml('amospartnershipprofiles', '#error_saving_partnership_profile_type'));
+                    Yii::$app->getSession()->addFlash('danger',
+                        Module::tHtml('amospartnershipprofiles', '#error_saving_partnership_profile_type'));
                 } else if ($okPartnershipProfileType && !$okPartnershipProfileCountries) {
-                    Yii::$app->getSession()->addFlash('danger', Module::tHtml('amospartnershipprofiles', '#error_saving_partnership_profile_countries'));
+                    Yii::$app->getSession()->addFlash('danger',
+                        Module::tHtml('amospartnershipprofiles', '#error_saving_partnership_profile_countries'));
                 } else if (!$okPartnershipProfileType && !$okPartnershipProfileCountries) {
-                    Yii::$app->getSession()->addFlash('danger', Module::tHtml('amospartnershipprofiles', '#error_saving_partnership_profile_countries_and_types'));
+                    Yii::$app->getSession()->addFlash('danger',
+                        Module::tHtml('amospartnershipprofiles', '#error_saving_partnership_profile_countries_and_types'));
                 }
                 if (Yii::$app->user->can('PARTNERSHIPPROFILES_UPDATE', ['model' => $this->model])) {
                     return $this->redirect(['update', 'id' => $this->model->id]);
@@ -471,18 +483,19 @@ class PartnershipProfilesController extends CrudController
                     return $this->redirect(Yii::$app->session->get(Module::beginCreateNewSessionKeyPartnershipProfiles()));
                 }
             } else {
-                Yii::$app->getSession()->addFlash('danger', Module::tHtml('amospartnershipprofiles', 'Element not updated, check the data entered.'));
+                Yii::$app->getSession()->addFlash('danger',
+                    Module::tHtml('amospartnershipprofiles', 'Element not updated, check the data entered.'));
             }
         }
 
         return $this->render(
-            'update',
-            [
+                'update',
+                [
                 'model' => $this->model,
                 'fid' => null,
                 'dataField' => null,
                 'dataEntity' => null
-            ]
+                ]
         );
     }
 
@@ -503,15 +516,21 @@ class PartnershipProfilesController extends CrudController
             if (empty($expressionsOfInterest)) {
                 $this->model->delete();
                 if (!$this->model->hasErrors()) {
-                    Yii::$app->getSession()->addFlash('success', Module::t('amospartnershipprofiles', 'Partnership profile deleted successfully.'));
+                    Yii::$app->getSession()->addFlash('success',
+                        Module::t('amospartnershipprofiles', 'Partnership profile deleted successfully.'));
                 } else {
-                    Yii::$app->getSession()->addFlash('danger', Module::t('amospartnershipprofiles', 'You are not authorised to delete this partnership profile.'));
+                    Yii::$app->getSession()->addFlash('danger',
+                        Module::t('amospartnershipprofiles',
+                            'You are not authorised to delete this partnership profile.'));
                 }
             } else {
-                Yii::$app->getSession()->addFlash('danger', Module::t('amospartnershipprofiles', 'You can not delete this partnership profile because there is at least one expression of interest.'));
+                Yii::$app->getSession()->addFlash('danger',
+                    Module::t('amospartnershipprofiles',
+                        'You can not delete this partnership profile because there is at least one expression of interest.'));
             }
         } else {
-            Yii::$app->getSession()->addFlash('danger', Module::tHtml('amospartnershipprofiles', 'Partnership profile not found.'));
+            Yii::$app->getSession()->addFlash('danger',
+                Module::tHtml('amospartnershipprofiles', 'Partnership profile not found.'));
         }
         return $this->redirect(Yii::$app->session->get(Module::beginCreateNewSessionKeyPartnershipProfiles()));
     }

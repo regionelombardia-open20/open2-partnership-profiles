@@ -11,6 +11,7 @@
 
 namespace open20\amos\partnershipprofiles\widgets;
 
+use open20\amos\admin\models\UserProfile;
 use open20\amos\core\helpers\Html;
 use open20\amos\partnershipprofiles\exceptions\PartnershipProfilesException;
 use open20\amos\partnershipprofiles\models\PartnershipProfiles;
@@ -44,7 +45,7 @@ class ExpressYourInterestWidget extends Widget
     public function init()
     {
         parent::init();
-        
+
         if (is_null($this->model)) {
             throw new PartnershipProfilesException(Module::t('amospartnershipprofiles', 'ExpressYourInterestWidget: missing model'));
         }
@@ -125,15 +126,60 @@ class ExpressYourInterestWidget extends Widget
     public function renderExpressYourInterestButton()
     {
         $button = '';
-        if ($this->model->expressionOfInterestAllowed($this->allowedPartnershipProfileIds)) {
+        if ($this->isUserValidatedAtLeastOnce()) {
+            if ($this->model->expressionOfInterestAllowed($this->allowedPartnershipProfileIds)) {
+                $button = Html::beginTag('div', ['class' => 'footer_sidebar text-right']);
+                $button .= Html::a(
+                    Module::tHtml('amospartnershipprofiles', 'Express your interest'),
+                    ['/partnershipprofiles/expressions-of-interest/create', 'partnership_profile_id' => $this->model->id],
+                    ['class' => 'btn btn-navigation-primary']
+                );
+                $button .= Html::endTag('div');
+            }
+        } else {
             $button = Html::beginTag('div', ['class' => 'footer_sidebar text-right']);
             $button .= Html::a(
                 Module::tHtml('amospartnershipprofiles', 'Express your interest'),
-                ['/partnershipprofiles/expressions-of-interest/create', 'partnership_profile_id' => $this->model->id],
-                ['class' => 'btn btn-navigation-primary']
+                'javascript:void(0)',
+                [
+                    'class' => 'btn btn-navigation-primary',
+                    'data-target' => "#modal-pp-alert",
+                    'data-toggle' => "modal"
+                ]
             );
             $button .= Html::endTag('div');
+            $this->renderModalExprInterest();
         }
         return $button;
+    }
+
+    /**
+     * @return bool
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function isUserValidatedAtLeastOnce()
+    {
+        /**
+         * $profile UserProfile
+         */
+        $profile = UserProfile::find()->andWhere(['user_id' => \Yii::$app->user->id])->one();
+        if ($profile && $profile->validato_almeno_una_volta) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     *
+     */
+    public function renderModalExprInterest(){
+        \yii\bootstrap\Modal::begin([
+            'id' => 'modal-pp-alert'
+        ]);
+        echo "<p>" . Module::t('amospartnershipprofiles', "Gentile utente, ti ringraziamo per avere espresso il tuo interesse, ma il tuo profilo è ancora in attesa di validazione e la tua richiesta non è stata finalizzata.
+<br><br>Ti invitiamo a tornare a manifestare il tuo interesse per la proposta di collaborazione quando riceverai conferma della validazione del tuo profilo. Grazie"
+            ) . "</p>";
+        \yii\bootstrap\Modal::end();
+
     }
 }

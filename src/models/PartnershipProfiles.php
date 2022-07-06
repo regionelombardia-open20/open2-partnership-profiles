@@ -29,6 +29,7 @@ use open20\amos\partnershipprofiles\i18n\grammar\PartnershipProfilesGrammar;
 use open20\amos\partnershipprofiles\Module;
 use open20\amos\partnershipprofiles\utility\PartnershipProfilesUtility;
 use open20\amos\partnershipprofiles\widgets\icons\WidgetIconPartnershipProfilesDashboard;
+use open20\amos\seo\behaviors\SeoContentBehavior;
 use open20\amos\workflow\behaviors\WorkflowLogFunctionsBehavior;
 use raoul2000\workflow\base\SimpleWorkflowBehavior;
 use yii\helpers\ArrayHelper;
@@ -145,7 +146,7 @@ class PartnershipProfiles extends \open20\amos\partnershipprofiles\models\base\P
             $cwhConfig = $cwhPubblicazioniCwhNodiValidatoriMm->cwhConfig;
 
             /** @var AmosAdmin $adminModule */
-            $adminModule = \Yii::$app->getModule('admin');
+            $adminModule = \Yii::$app->getModule(AmosAdmin::getModuleName());
             $organizationsModuleName = $adminModule->getOrganizationModuleName();
             $organizzazioniModule = \Yii::$app->getModule($organizationsModuleName);
 
@@ -231,6 +232,13 @@ class PartnershipProfiles extends \open20\amos\partnershipprofiles\models\base\P
             'NotifyBehavior' => [
                 'class' => NotifyBehavior::className(),
                 'conditions' => []
+            ],
+            'SeoContentBehavior' => [
+                'class' => SeoContentBehavior::className(),
+                'defaultOgType' => 'article',
+                'schema' => 'NewsArticle',
+                'titleAttribute' => 'title',
+                'descriptionAttribute' => 'short_description'
             ]
         ]);
     }
@@ -551,7 +559,7 @@ class PartnershipProfiles extends \open20\amos\partnershipprofiles\models\base\P
      */
     public function getTranslatedStatus()
     {
-        return $this->getWorkflowStatus()->getLabel();
+        return Module::t('amospartnershipprofiles', $this->getWorkflowStatus()->getLabel());
     }
 
     /**

@@ -8,7 +8,6 @@
  * @package    open20\amos\partnershipprofiles\views\partnership-profiles
  * @category   CategoryName
  */
-
 use open20\amos\attachments\components\AttachmentsTableWithPreview;
 use open20\amos\core\forms\ActiveForm;
 use open20\amos\core\forms\ContextMenuWidget;
@@ -31,11 +30,10 @@ use yii\widgets\DetailView;
  * @var yii\web\View $this
  * @var open20\amos\partnershipprofiles\models\PartnershipProfiles $model
  */
-
-$this->title = strip_tags($model);
+$this->title                   = strip_tags($model);
 $this->params['breadcrumbs'][] = ['label' => Module::t('amospartnershipprofiles', 'Partnership Profiles'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
-$statesCounter = $model->getExpressionsOfInterestStatesCounter();
+$statesCounter                 = $model->getExpressionsOfInterestStatesCounter();
 
 /** @var PartnershipProfilesController $appController */
 $appController = Yii::$app->controller;
@@ -43,46 +41,48 @@ $appController = Yii::$app->controller;
 $ownInterestPartnershipProfileIds = $appController->getOwnInterestPartnershipProfiles(true);
 
 // Tab ids
-$idTabCard = 'tab-card';
-$idClassifications = 'tab-classifications';
+$idTabCard            = 'tab-card';
+$idClassifications    = 'tab-classifications';
 $idTabMoreInformation = 'tab-more-information';
-$idTabAttachments = 'tab-attachments';
+$idTabAttachments     = 'tab-attachments';
 
-$moreInformationLinkId = "more-information-link-id";
+$moreInformationLinkId  = "more-information-link-id";
 $moreInformationBlockId = "more-information-block-id";
-$lessInformationLinkId = "less-information-block-id";
+$lessInformationLinkId  = "less-information-block-id";
 
 $js = "
-$('#" . $moreInformationLinkId . "').on('click', function (event) {
+$('#".$moreInformationLinkId."').on('click', function (event) {
     event.preventDefault();
     $(this).addClass('hidden');
-    $('#" . $moreInformationBlockId . "').removeClass('hidden');
-    $('#" . $lessInformationLinkId . "').removeClass('hidden');
+    $('#".$moreInformationBlockId."').removeClass('hidden');
+    $('#".$lessInformationLinkId."').removeClass('hidden');
     return false;
 });
-$('#" . $lessInformationLinkId . "').on('click', function (event) {
+$('#".$lessInformationLinkId."').on('click', function (event) {
     event.preventDefault();
     $(this).addClass('hidden');
-    $('#" . $moreInformationBlockId . "').addClass('hidden');
-    $('#" . $moreInformationLinkId . "').removeClass('hidden');
+    $('#".$moreInformationBlockId."').addClass('hidden');
+    $('#".$moreInformationLinkId."').removeClass('hidden');
     return false;
 });
 ";
 $this->registerJs($js, View::POS_READY);
 
-$module = \Yii::$app->getModule('partnershipprofiles');
-$moduleCwh = \Yii::$app->getModule('cwh');
+$module                    = \Yii::$app->getModule('partnershipprofiles');
+$moduleCwh                 = \Yii::$app->getModule('cwh');
 $communityConfigurationsId = null;
 
 if (isset($moduleCwh) && !empty($moduleCwh->getCwhScope())) {
     $scope = $moduleCwh->getCwhScope();
     if (isset($scope['community'])) {
-        $communityConfigurationsId = 'communityId-' . $scope['community'];
+        $communityConfigurationsId = 'communityId-'.$scope['community'];
     }
 }
 
-$enabledFields = !empty($module->fieldsCommunityConfigurations[$communityConfigurationsId]['fields']) ? $module->fieldsCommunityConfigurations[$communityConfigurationsId]['fields'] : (!empty($module->fieldsConfigurations['fields']) ? $module->fieldsConfigurations['fields'] : []);
-$enabledTabs = !empty($module->fieldsCommunityConfigurations[$communityConfigurationsId]['tabs']) ? $module->fieldsCommunityConfigurations[$communityConfigurationsId]['tabs'] : (!empty($module->fieldsConfigurations['tabs']) ? $module->fieldsConfigurations['tabs'] : []);
+$enabledFields = !empty($module->fieldsCommunityConfigurations[$communityConfigurationsId]['fields']) ? $module->fieldsCommunityConfigurations[$communityConfigurationsId]['fields']
+        : (!empty($module->fieldsConfigurations['fields']) ? $module->fieldsConfigurations['fields'] : []);
+$enabledTabs   = !empty($module->fieldsCommunityConfigurations[$communityConfigurationsId]['tabs']) ? $module->fieldsCommunityConfigurations[$communityConfigurationsId]['tabs']
+        : (!empty($module->fieldsConfigurations['tabs']) ? $module->fieldsConfigurations['tabs'] : []);
 
 if ($model->status != PartnershipProfiles::PARTNERSHIP_PROFILES_WORKFLOW_STATUS_VALIDATED) {
     echo \open20\amos\workflow\widgets\WorkflowTransitionStateDescriptorWidget::widget([
@@ -91,7 +91,6 @@ if ($model->status != PartnershipProfiles::PARTNERSHIP_PROFILES_WORKFLOW_STATUS_
         'classDivMessage' => 'message'
     ]);
 }
-
 ?>
 <div class="<?= Yii::$app->controller->id ?>-view">
 
@@ -100,10 +99,12 @@ if ($model->status != PartnershipProfiles::PARTNERSHIP_PROFILES_WORKFLOW_STATUS_
         <?php $this->beginBlock($idTabCard); ?>
 
         <div class="post-header col-xs-12 col-sm-7 nop media">
-            <?= ItemAndCardHeaderWidget::widget([
+            <?=
+            ItemAndCardHeaderWidget::widget([
                 'model' => $model,
                 'publicationDateField' => 'created_at'
-            ]); ?>
+            ]);
+            ?>
         </div>
 
         <div class="col-sm-7 col-xs-12 nop">
@@ -111,11 +112,13 @@ if ($model->status != PartnershipProfiles::PARTNERSHIP_PROFILES_WORKFLOW_STATUS_
                 <div class="post-title col-xs-10">
                     <h2><?= $model->title ?></h2>
                 </div>
-                <?= ContextMenuWidget::widget([
+                <?=
+                ContextMenuWidget::widget([
                     'model' => $model,
-                    'actionModify' => "/partnershipprofiles/partnership-profiles/update?id=" . $model->id,
-                    'actionDelete' => "/partnershipprofiles/partnership-profiles/delete?id=" . $model->id
-                ]) ?>
+                    'actionModify' => "/partnershipprofiles/partnership-profiles/update?id=".$model->id,
+                    'actionDelete' => "/partnershipprofiles/partnership-profiles/delete?id=".$model->id
+                ])
+                ?>
 
                 <div class="clearfix"></div>
 
@@ -129,22 +132,26 @@ if ($model->status != PartnershipProfiles::PARTNERSHIP_PROFILES_WORKFLOW_STATUS_
             </div>
             <div class="post-footer col-xs-12 nop">
                 <div class="post-info col-xs-12">
-                    <?php if (!empty($enabledFields['expiration_in_months']) && $enabledFields['expiration_in_months'] == true) {
+                    <?php
+                    if (!empty($enabledFields['expiration_in_months']) && $enabledFields['expiration_in_months'] == true) {
                         $pubblicationDate = '{pubblicationdates}';
                     } else {
                         $pubblicationDate = '{pubblishedfrom}';
                     }
                     ?>
-                    <?= PublishedByWidget::widget([
+                    <?=
+                    PublishedByWidget::widget([
                         'model' => $model,
-                        'layout' => '{publisherAdv}{targetAdv}{statusTranslated}' . $pubblicationDate,
+                        'layout' => '{publisherAdv}{targetAdv}{statusTranslated}'.$pubblicationDate,
                         'renderSections' => [
                             '{statusTranslated}' => function ($model) {
-                                return Html::tag('label', \open20\amos\core\module\BaseAmosModule::t('amoscore', 'Status')) . ': ' .
+                                return Html::tag('label',
+                                        \open20\amos\core\module\BaseAmosModule::t('amoscore', 'Status')).': '.
                                     Module::t('amospartnershipprofiles', $model->getWorkflowStatus()->label);
                             }
                         ]
-                    ]) ?>
+                    ])
+                    ?>
                 </div>
                 <?php if (isset($statsToolbar) && $statsToolbar): ?>
                     <?= StatsToolbar::widget(['model' => $model]); ?>
@@ -161,12 +168,18 @@ if ($model->status != PartnershipProfiles::PARTNERSHIP_PROFILES_WORKFLOW_STATUS_
         <?= $this->render('boxes/sidebar', $sidebarParams) ?>
 
         <div class="container-general-info col-xs-12 nop">
-            <!--<?= Html::a(Module::t('amospartnershipprofiles', 'Show more information'), '', ['class' => 'more-info', 'id' => $moreInformationLinkId]); ?>
-        <?= Html::a(Module::t('amospartnershipprofiles', 'Show less information'), '', ['class' => 'more-info hidden', 'id' => $lessInformationLinkId]); ?>-->
+            <!--<?= Html::a(Module::t('amospartnershipprofiles', 'Show more information'), '',
+            ['class' => 'more-info', 'id' => $moreInformationLinkId]);
+        ?>
+            <?= Html::a(Module::t('amospartnershipprofiles', 'Show less information'), '',
+                ['class' => 'more-info hidden', 'id' => $lessInformationLinkId]);
+            ?>-->
             <div id="<?= $moreInformationBlockId ?>"><!--class="hidden"-->
-                <h3 class="title"><?= AmosIcons::show('info-outline'); ?> <?= Module::tHtml('amospartnershipprofiles', 'Information') ?></h3>
+                <h3 class="title"><?= AmosIcons::show('info-outline'); ?> <?= Module::tHtml('amospartnershipprofiles',
+                    'Information')
+            ?></h3>
                 <?php
-                $attributes = [];
+                $attributes    = [];
                 if (!empty($enabledFields['title']) && $enabledFields['title'] == true) {
                     $attributes[] = 'title';
                 }
@@ -183,13 +196,15 @@ if ($model->status != PartnershipProfiles::PARTNERSHIP_PROFILES_WORKFLOW_STATUS_
                 if (!empty($enabledFields['expected_contribution']) && $enabledFields['expected_contribution'] == true) {
                     $attributes[] = 'expected_contribution:html';
                 }
-                if (!empty($enabledFields['advantages_innovative_aspects']) && $enabledFields['advantages_innovative_aspects'] == true) {
+                if (!empty($enabledFields['advantages_innovative_aspects']) && $enabledFields['advantages_innovative_aspects']
+                    == true) {
                     $attributes[] = 'advantages_innovative_aspects:html';
                 }
                 if (!empty($enabledFields['contact_person']) && $enabledFields['contact_person'] == true) {
                     $attributes[] = 'contact_person';
                 }
-                if (!empty($enabledFields['other_prospect_desired_collab']) && $enabledFields['other_prospect_desired_collab'] == true) {
+                if (!empty($enabledFields['other_prospect_desired_collab']) && $enabledFields['other_prospect_desired_collab']
+                    == true) {
                     $attributes[] = 'other_prospect_desired_collab';
                 }
                 if (!empty($enabledFields['partnership_profile_date']) && $enabledFields['partnership_profile_date'] == true) {
@@ -211,13 +226,16 @@ if ($model->status != PartnershipProfiles::PARTNERSHIP_PROFILES_WORKFLOW_STATUS_
                     if (!empty($enabledFields['english_title']) && $enabledFields['english_title'] == true) {
                         $attributes[] = 'english_title';
                     }
-                    if (!empty($enabledFields['english_short_description']) && $enabledFields['english_short_description'] == true) {
+                    if (!empty($enabledFields['english_short_description']) && $enabledFields['english_short_description']
+                        == true) {
                         $attributes[] = 'english_short_description:html';
                     }
-                    if (!empty($enabledFields['english_extended_description']) && $enabledFields['english_extended_description'] == true) {
+                    if (!empty($enabledFields['english_extended_description']) && $enabledFields['english_extended_description']
+                        == true) {
                         $attributes[] = 'english_extended_description:html';
                     }
-                    if (!empty($enabledFields['willingness_foreign_partners']) && $enabledFields['willingness_foreign_partners'] == true) {
+                    if (!empty($enabledFields['willingness_foreign_partners']) && $enabledFields['willingness_foreign_partners']
+                        == true) {
                         $attributes[] = 'willingness_foreign_partners:boolean';
                     }
                     if (!empty($enabledFields['work_language_id']) && $enabledFields['work_language_id'] == true) {
@@ -232,18 +250,21 @@ if ($model->status != PartnershipProfiles::PARTNERSHIP_PROFILES_WORKFLOW_STATUS_
                     if (!empty($enabledFields['other_development_stage']) && $enabledFields['other_development_stage'] == true) {
                         $attributes[] = 'other_development_stage.work_language';
                     }
-                    if (!empty($enabledFields['intellectual_property_id']) && $enabledFields['intellectual_property_id'] == true) {
+                    if (!empty($enabledFields['intellectual_property_id']) && $enabledFields['intellectual_property_id']
+                        == true) {
                         $attributes['intellectualProperty.value'] = [
                             'attribute' => 'intellectualProperty.value',
                             'label' => Module::t('amospartnershipprofiles', 'Intellectual property')
                         ];
                     }
-                    if (!empty($enabledFields['other_intellectual_property']) && $enabledFields['other_intellectual_property'] == true) {
+                    if (!empty($enabledFields['other_intellectual_property']) && $enabledFields['other_intellectual_property']
+                        == true) {
                         $attributes[] = 'other_intellectual_property';
                     }
                 }
 
-                if (!empty($enabledFields['attrPartnershipProfilesTypesMm']) && $enabledFields['attrPartnershipProfilesTypesMm'] == true) {
+                if (!empty($enabledFields['attrPartnershipProfilesTypesMm']) && $enabledFields['attrPartnershipProfilesTypesMm']
+                    == true) {
                     [
                         'label' => Module::t('amospartnershipprofiles', 'Partnership Profiles Types'),
                         'value' => function ($model) {
@@ -252,13 +273,14 @@ if ($model->status != PartnershipProfiles::PARTNERSHIP_PROFILES_WORKFLOW_STATUS_
                         }
                     ];
                 }
-
                 ?>
-                <?= DetailView::widget([
+                <?=
+                DetailView::widget([
                     'model' => $model,
                     'attributes' => $attributes,
                     'options' => ['class' => 'table-info']
-                ]) ?>
+                ])
+                ?>
             </div>
         </div>
         <?php $this->endBlock(); ?>
@@ -270,10 +292,11 @@ if ($model->status != PartnershipProfiles::PARTNERSHIP_PROFILES_WORKFLOW_STATUS_
         ];
         ?>
 
-        <?php if (Yii::$app->getModule('tag')): ?>
-            <?php $this->beginBlock($idClassifications); ?>
+            <?php if (Yii::$app->getModule('tag')): ?>
+                <?php $this->beginBlock($idClassifications); ?>
             <div class="body">
-                <?= ShowUserTagsWidget::widget([
+                <?=
+                ShowUserTagsWidget::widget([
                     'userProfile' => $model->id,
                     'className' => $model->className()
                 ]);
@@ -287,16 +310,18 @@ if ($model->status != PartnershipProfiles::PARTNERSHIP_PROFILES_WORKFLOW_STATUS_
                 'options' => ['id' => $idClassifications],
             ];
             ?>
-        <?php endif; ?>
+<?php endif; ?>
 
         <?php $this->beginBlock($idTabAttachments); ?>
         <!-- TODO sostituire il tag h3 con il tag p e applicare una classe per ridimensionare correttamente il testo per accessibilità -->
         <h3><?= Module::tHtml('amospartnershipprofiles', 'Attachments') ?></h3>
-        <?= AttachmentsTableWithPreview::widget([
+        <?=
+        AttachmentsTableWithPreview::widget([
             'model' => $model,
             'attribute' => 'partnershipProfileAttachments',
             'viewDeleteBtn' => false
-        ]) ?>
+        ])
+        ?>
         <?php $this->endBlock(); ?>
 
         <?php
@@ -306,10 +331,15 @@ if ($model->status != PartnershipProfiles::PARTNERSHIP_PROFILES_WORKFLOW_STATUS_
             'options' => ['id' => $idTabAttachments],
         ];
         ?>
-
-        <?= Tabs::widget([
-            'encodeLabels' => false,
-            'items' => $itemsTab
-        ]); ?>
+        <div class="row">
+            <div class="col-xs-12">
+                <?=
+                Tabs::widget([
+                    'encodeLabels' => false,
+                    'items' => $itemsTab
+                ]);
+                ?>
+            </div>
+        </div>
     </div>
 </div>
