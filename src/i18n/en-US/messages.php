@@ -179,7 +179,7 @@ return [
     'It puts an expression of interest in to validate status' => 'Begin expression of interest assessment',
     'Items not stored for error occurred' => 'Items not stored for error occurred',
     'Join venture' => 'Join venture',
-    'License' => 'License',
+    'Proscription' => 'Proscription',
     'List' => 'List',
     'Missing partnership profile id' => 'Missing partnership profile id',
     'More information' => 'More information',
@@ -319,7 +319,7 @@ return [
 
     // PartnershipProfilesType
     '#ricerca' => 'Research',
-    '#licenza' => 'License',
+    '#licenza' => 'Proscription',
     '#collaborazione-tecnica' => 'Technical collaboration',
     '#joint-venture' => 'Joint Venture',
     '#subfornitura' => 'Subcontracting',

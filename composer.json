@@ -3,7 +3,7 @@
     "description": "Partnership profiles - plugin",
     "keywords": ["amos", "yii2", "partnership_profiles"],
     "type": "plugin",
-    "license": "BSD-3-Clause",
+    "proscription": "BSD-3-Clause",
     "require": {
         "php": ">=5.4.0",
         "open20/amos-admin": "^2.0",

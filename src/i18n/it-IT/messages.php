@@ -175,7 +175,7 @@ return [
     'It puts an expression of interest in to validate status' => 'Inizia la valutazione della manifestazione di interesse',
     'Items not stored for error occurred' => 'Elementi non archiviati per un errrore in archiviazione',
     'Join venture' => 'Join venture',
-    'License' => 'Licenza',
+    'Proscription' => 'Licenza',
     'List' => 'Lista',
     'Missing partnership profile id' => 'Id della proposta di collaborazione',
     'More information' => 'Ulteriori informazioni',

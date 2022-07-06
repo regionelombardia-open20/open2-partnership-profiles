@@ -79,7 +79,7 @@ class m170911_102944_create_partnership_profiles_table_partnership_profiles_type
             ],
             [
                 3,
-                'License',
+                'Proscription',
                 new Expression('NOW()'),
                 new Expression('NOW()'),
                 self::ADMIN_ID,

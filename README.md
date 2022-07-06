@@ -89,7 +89,7 @@ The cwh configuration is at this url: /cwh/configuration/wizard
 
 
 ### 7. Action to archive the proposal 
-php yii /partnershipprofiles/partnership-profiles/archive-partnership-profiles
+php yii /partnershipprofiles/partnership-profiles-console/archive-partnership-profiles
 
 ## Configurable fields 
 
