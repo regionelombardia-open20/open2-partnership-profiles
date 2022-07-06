@@ -92,6 +92,11 @@ class PartnershipProfilesController extends Controller
             $str = $this->ansiFormat($str . " " . count($errorIds), Console::FG_RED);
             Console::stdout("$str\n");
         }
+        
+        if(count($archivedIds) == 0){
+            Console::stdout("nessuna da archiviare\n");
+            return;
+        }
 
         $toEmails = $this->getAdministratorEmails();
         $subject = Module::t('amospartnershipprofiles', 'Archived partnership profiles notify');

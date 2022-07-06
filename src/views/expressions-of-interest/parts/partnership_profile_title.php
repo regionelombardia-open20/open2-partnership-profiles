@@ -41,8 +41,8 @@ use open20\amos\partnershipprofiles\utility\PartnershipProfilesUtility;
         </div>
         <div class="col-sm-6">
             <div>
-                <strong><?= $model->partnershipProfile->getAttributeLabel('status') ?>:</strong>
-                <?= $model->partnershipProfile->getWorkflowStatus()->getLabel() ?>
+                <strong><?= Module::t('amospartnershipprofiles',$model->partnershipProfile->getAttributeLabel('status')) ?>:</strong>
+                <?= Module::t('amospartnershipprofiles',$model->partnershipProfile->getWorkflowStatus()->getLabel() )?>
             </div>
             <div>
                 <strong><?= $model->partnershipProfile->getAttributeLabel('partnership_profile_date') ?>:</strong>

@@ -333,7 +333,7 @@ class PartnershipProfilesController extends \open20\amos\partnershipprofiles\con
             $this->view->params['urlLinkAll']   = Module::t('amospartnershipprofiles',
                     '/partnershipprofiles/partnership-profiles/index');
             $this->view->params['titleLinkAll'] = Module::t('amospartnershipprofiles',
-                    'Visualizza la lista delle notizie di mio interesse'
+                    'Visualizza la lista delle proposte di mio interesse'
             );
         }
 
@@ -354,60 +354,9 @@ class PartnershipProfilesController extends \open20\amos\partnershipprofiles\con
      */
     public function actionCreatedBy($currentView = null)
     {
-        if (\Yii::$app->user->isGuest) {
-            $titleSection = Module::t('amospartnershipprofiles', 'Proposte di collaborazione');
-            $urlLinkAll   = '';
-
-            $ctaLoginRegister = Html::a(
-                    Module::t('amospartnershipprofiles', '#beforeActionCtaLoginRegister'),
-                    isset(\Yii::$app->params['linkConfigurations']['loginLinkCommon']) ? \Yii::$app->params['linkConfigurations']['loginLinkCommon']
-                        : \Yii::$app->params['platform']['backendUrl'].'/'.AmosAdmin::getModuleName().'/security/login',
-                    [
-                    'title' => Module::t('amospartnershipprofiles',
-                        'Clicca per accedere o registrarti alla piattaforma {platformName}',
-                        ['platformName' => \Yii::$app->name]
-                    )
-                    ]
-            );
-            $subTitleSection  = Html::tag( 
-                    'p',
-                    Module::t('amospartnershipprofiles', '#beforeActionSubtitleSectionGuest',
-                        ['ctaLoginRegister' => $ctaLoginRegister]
-                    )
-            );
-        } else {
-            $titleSection = Module::t('amospartnershipprofiles', 'Le mie proposte di collaborazione');
-            $labelLinkAll = Module::t('amospartnershipprofiles', 'Proposte di mio interesse');
-            $urlLinkAll   = Module::t('amospartnershipprofiles',
-                    '/partnershipprofiles/partnership-profiles/own-interest');
-            $titleLinkAll = Module::t('amospartnershipprofiles', 'Visualizza la lista delle proposte di mio interesse');
-
-            $subTitleSection = ''; //Html::tag('p', Module::t('amospartnershipprofiles', '#beforeActionSubtitleSectionLogged'));
+        if (!\Yii::$app->user->isGuest) {
+            $this->view->params['titleSection'] = Module::t('amospartnershipprofiles', 'Proposte di collaborazione');
         }
-
-        $labelCreate = Module::t('amospartnershipprofiles', 'Nuova');
-        $titleCreate = Module::t('amospartnershipprofiles', 'Crea una nuova proposta');
-        $labelManage = Module::t('amospartnershipprofiles', 'Gestisci');
-        $titleManage = Module::t('amospartnershipprofiles', 'Gestisci le proposte');
-        $urlCreate   = Module::t('amospartnershipprofiles', '/partnershipprofiles/partnership-profiles/create');
-        $urlManage   = Module::t('amospartnershipprofiles', '#');
-
-        $this->view->params = [
-            'isGuest' => \Yii::$app->user->isGuest,
-            'modelLabel' => 'partnershipprofiles',
-            'titleSection' => $titleSection,
-            'subTitleSection' => $subTitleSection,
-            'urlLinkAll' => $urlLinkAll,
-            'labelLinkAll' => $labelLinkAll,
-            'titleLinkAll' => $titleLinkAll,
-            'labelCreate' => $labelCreate,
-            'titleCreate' => $titleCreate,
-            'labelManage' => $labelManage,
-            'titleManage' => $titleManage,
-            'urlCreate' => $urlCreate,
-            'urlManage' => $urlManage,
-        ];
-        
         $this->setDataProvider($this->modelSearch->searchCreatedBy(Yii::$app->request->getQueryParams()));
         return $this->baseListsAction('Created By Me', $currentView);
     }
@@ -418,59 +367,9 @@ class PartnershipProfilesController extends \open20\amos\partnershipprofiles\con
      */
     public function actionArchived($currentView = null)
     {
-        if (\Yii::$app->user->isGuest) {
-            $titleSection = Module::t('amospartnershipprofiles', 'Proposte di collaborazione archiviate');
-            $urlLinkAll   = '';
-
-            $ctaLoginRegister = Html::a(
-                    Module::t('amospartnershipprofiles', '#beforeActionCtaLoginRegister'),
-                    isset(\Yii::$app->params['linkConfigurations']['loginLinkCommon']) ? \Yii::$app->params['linkConfigurations']['loginLinkCommon']
-                        : \Yii::$app->params['platform']['backendUrl'].'/'.AmosAdmin::getModuleName().'/security/login',
-                    [
-                    'title' => Module::t('amospartnershipprofiles',
-                        'Clicca per accedere o registrarti alla piattaforma {platformName}',
-                        ['platformName' => \Yii::$app->name]
-                    )
-                    ]
-            );
-            $subTitleSection  = Html::tag( 
-                    'p',
-                    Module::t('amospartnershipprofiles', '#beforeActionSubtitleSectionGuest',
-                        ['ctaLoginRegister' => $ctaLoginRegister]
-                    )
-            );
-        } else {
-            $titleSection = Module::t('amospartnershipprofiles', 'Tutte le proposte archiviate');
-            $labelLinkAll = Module::t('amospartnershipprofiles', 'Proposte di mio interesse');
-            $urlLinkAll   = Module::t('amospartnershipprofiles',
-                    '/partnershipprofiles/partnership-profiles/own-interest');
-            $titleLinkAll = Module::t('amospartnershipprofiles', 'Visualizza la lista delle proposte di mio interesse');
-
-            $subTitleSection = ''; //Html::tag('p', Module::t('amospartnershipprofiles', '#beforeActionSubtitleSectionLogged'));
+        if (!\Yii::$app->user->isGuest) {
+        $this->view->params['titleSection'] = Module::t('amospartnershipprofiles', 'Proposte di collaborazione archiviate');
         }
-
-        $labelCreate = Module::t('amospartnershipprofiles', 'Nuova');
-        $titleCreate = Module::t('amospartnershipprofiles', 'Crea una nuova proposta');
-        $labelManage = Module::t('amospartnershipprofiles', 'Gestisci');
-        $titleManage = Module::t('amospartnershipprofiles', 'Gestisci le proposte');
-        $urlCreate   = Module::t('amospartnershipprofiles', '/partnershipprofiles/partnership-profiles/create');
-        $urlManage   = Module::t('amospartnershipprofiles', '#');
-
-        $this->view->params = [
-            'isGuest' => \Yii::$app->user->isGuest,
-            'modelLabel' => 'partnershipprofiles',
-            'titleSection' => $titleSection,
-            'subTitleSection' => $subTitleSection,
-            'urlLinkAll' => $urlLinkAll,
-            'labelLinkAll' => $labelLinkAll,
-            'titleLinkAll' => $titleLinkAll,
-            'labelCreate' => $labelCreate,
-            'titleCreate' => $titleCreate,
-            'labelManage' => $labelManage,
-            'titleManage' => $titleManage,
-            'urlCreate' => $urlCreate,
-            'urlManage' => $urlManage,
-        ];
         $this->setDataProvider($this->modelSearch->searchArchived(Yii::$app->request->getQueryParams()));
         return $this->baseListsAction('Archived', $currentView);
     }
@@ -481,59 +380,9 @@ class PartnershipProfilesController extends \open20\amos\partnershipprofiles\con
      */
     public function actionClosed($currentView = null)
     {
-        if (\Yii::$app->user->isGuest) {
-            $titleSection = Module::t('amospartnershipprofiles', 'Proposte di collaborazione chiuse');
-            $urlLinkAll   = '';
-
-            $ctaLoginRegister = Html::a(
-                    Module::t('amospartnershipprofiles', '#beforeActionCtaLoginRegister'),
-                    isset(\Yii::$app->params['linkConfigurations']['loginLinkCommon']) ? \Yii::$app->params['linkConfigurations']['loginLinkCommon']
-                        : \Yii::$app->params['platform']['backendUrl'].'/'.AmosAdmin::getModuleName().'/security/login',
-                    [
-                    'title' => Module::t('amospartnershipprofiles',
-                        'Clicca per accedere o registrarti alla piattaforma {platformName}',
-                        ['platformName' => \Yii::$app->name]
-                    )
-                    ]
-            );
-            $subTitleSection  = Html::tag( 
-                    'p',
-                    Module::t('amospartnershipprofiles', '#beforeActionSubtitleSectionGuest',
-                        ['ctaLoginRegister' => $ctaLoginRegister]
-                    )
-            );
-        } else {
-            $titleSection = Module::t('amospartnershipprofiles', 'Tutte le proposte chiuse');
-            $labelLinkAll = Module::t('amospartnershipprofiles', 'Proposte di mio interesse');
-            $urlLinkAll   = Module::t('amospartnershipprofiles',
-                    '/partnershipprofiles/partnership-profiles/own-interest');
-            $titleLinkAll = Module::t('amospartnershipprofiles', 'Visualizza la lista delle proposte di mio interesse');
-
-            $subTitleSection = ''; //Html::tag('p', Module::t('amospartnershipprofiles', '#beforeActionSubtitleSectionLogged'));
+        if (!\Yii::$app->user->isGuest) {
+            $this->view->params['titleSection']  = Module::t('amospartnershipprofiles', 'Proposte di collaborazione chiuse');   
         }
-
-        $labelCreate = Module::t('amospartnershipprofiles', 'Nuova');
-        $titleCreate = Module::t('amospartnershipprofiles', 'Crea una nuova proposta');
-        $labelManage = Module::t('amospartnershipprofiles', 'Gestisci');
-        $titleManage = Module::t('amospartnershipprofiles', 'Gestisci le proposte');
-        $urlCreate   = Module::t('amospartnershipprofiles', '/partnershipprofiles/partnership-profiles/create');
-        $urlManage   = Module::t('amospartnershipprofiles', '#');
-
-        $this->view->params = [
-            'isGuest' => \Yii::$app->user->isGuest,
-            'modelLabel' => 'partnershipprofiles',
-            'titleSection' => $titleSection,
-            'subTitleSection' => $subTitleSection,
-            'urlLinkAll' => $urlLinkAll,
-            'labelLinkAll' => $labelLinkAll,
-            'titleLinkAll' => $titleLinkAll,
-            'labelCreate' => $labelCreate,
-            'titleCreate' => $titleCreate,
-            'labelManage' => $labelManage,
-            'titleManage' => $titleManage,
-            'urlCreate' => $urlCreate,
-            'urlManage' => $urlManage,
-        ];
         $this->setDataProvider($this->modelSearch->searchClosed(Yii::$app->request->getQueryParams()));
         return $this->baseListsAction('Closed', $currentView);
     }
@@ -558,59 +407,9 @@ class PartnershipProfilesController extends \open20\amos\partnershipprofiles\con
      */
     public function actionToValidate($currentView = null)
     {
-        if (\Yii::$app->user->isGuest) {
-            $titleSection = Module::t('amospartnershipprofiles', 'Proposte da validare');
-            $urlLinkAll   = '';
-
-            $ctaLoginRegister = Html::a(
-                    Module::t('amospartnershipprofiles', '#beforeActionCtaLoginRegister'),
-                    isset(\Yii::$app->params['linkConfigurations']['loginLinkCommon']) ? \Yii::$app->params['linkConfigurations']['loginLinkCommon']
-                        : \Yii::$app->params['platform']['backendUrl'].'/'.AmosAdmin::getModuleName().'/security/login',
-                    [
-                    'title' => Module::t('amospartnershipprofiles',
-                        'Clicca per accedere o registrarti alla piattaforma {platformName}',
-                        ['platformName' => \Yii::$app->name]
-                    )
-                    ]
-            );
-            $subTitleSection  = Html::tag( 
-                    'p',
-                    Module::t('amospartnershipprofiles', '#beforeActionSubtitleSectionGuest',
-                        ['ctaLoginRegister' => $ctaLoginRegister]
-                    )
-            );
-        } else {
-            $titleSection = Module::t('amospartnershipprofiles', 'Tutte le proposte da validare');
-            $labelLinkAll = Module::t('amospartnershipprofiles', 'Proposte di mio interesse');
-            $urlLinkAll   = Module::t('amospartnershipprofiles',
-                    '/partnershipprofiles/partnership-profiles/own-interest');
-            $titleLinkAll = Module::t('amospartnershipprofiles', 'Visualizza la lista delle proposte di mio interesse');
-
-            $subTitleSection = ''; //Html::tag('p', Module::t('amospartnershipprofiles', '#beforeActionSubtitleSectionLogged'));
+        if (!\Yii::$app->user->isGuest) {
+            $this->view->params['titleSection']  = Module::t('amospartnershipprofiles', 'Proposte da validare');   
         }
-
-        $labelCreate = Module::t('amospartnershipprofiles', 'Nuova');
-        $titleCreate = Module::t('amospartnershipprofiles', 'Crea una nuova proposta');
-        $labelManage = Module::t('amospartnershipprofiles', 'Gestisci');
-        $titleManage = Module::t('amospartnershipprofiles', 'Gestisci le proposte');
-        $urlCreate   = Module::t('amospartnershipprofiles', '/partnershipprofiles/partnership-profiles/create');
-        $urlManage   = Module::t('amospartnershipprofiles', '#');
-
-        $this->view->params = [
-            'isGuest' => \Yii::$app->user->isGuest,
-            'modelLabel' => 'partnershipprofiles',
-            'titleSection' => $titleSection,
-            'subTitleSection' => $subTitleSection,
-            'urlLinkAll' => $urlLinkAll,
-            'labelLinkAll' => $labelLinkAll,
-            'titleLinkAll' => $titleLinkAll,
-            'labelCreate' => $labelCreate,
-            'titleCreate' => $titleCreate,
-            'labelManage' => $labelManage,
-            'titleManage' => $titleManage,
-            'urlCreate' => $urlCreate,
-            'urlManage' => $urlManage,
-        ];
         $this->setDataProvider($this->modelSearch->searchToValidate(Yii::$app->request->getQueryParams()));
         return $this->baseListsAction('To Validate', $currentView);
     }

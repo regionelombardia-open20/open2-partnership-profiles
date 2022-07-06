@@ -183,7 +183,11 @@ class PartnershipProfilesController extends CrudController
     public function getFormCloseUrl()
     {
         $redirectUrl = Yii::$app->session->get(Module::beginCreateNewSessionKeyPartnershipProfiles());
-        return (strlen($redirectUrl) > 0 ? $redirectUrl : \Yii::$app->session->get('previousUrl'));
+        $url =(strlen($redirectUrl) > 0 ? $redirectUrl : \Yii::$app->session->get('previousUrl'));
+        if(empty($url)){
+            return \Yii::$app->request->referrer;
+        }
+        return $url;
     }
 
     /**

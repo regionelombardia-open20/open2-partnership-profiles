@@ -69,7 +69,7 @@ return [
     'as your facilitator. To confirm click on the CONFIRM button. At the confirm the facilitator will be bound to the user profile.' => 'come tuo facilitatore. Per confermare fai click sul pulsante CONFERMA. Alla conferma il nuovo facilitatore viene collegato al profilo dell\'utente.',
     'Attachments' => 'Allegati',
     'Back to the partnership profile' => 'Torna alla proposta di collaborazione',
-    'Before choose the facilitator click on the CREATE button in the bottom to save the partnership profile.' => 'Per inserire un facilitatore, prima fai click sul pulsante SALVA IN BOZZA in basso per salvare la proposta di collaborazione',
+    'Before choose the facilitator click on the CREATE button in the bottom to save the partnership profile.' => 'Per inserire un facilitatore, prima fai click sul pulsante SALVA IN BOZZA in basso per salvare la proposta di collaborazione.',
     'Begin assessment' => 'Inizia valutazione',
     'Calculated Expiry Date' => 'Data scadenza calcolata',
     'Cancel' => 'Annulla',
@@ -325,4 +325,5 @@ return [
     'Partnership Profiles Title' => 'Titolo',
     'Partnership Profiles Updated At' => 'Aggiornato il',
     'Partnership Profiles Partnership Profile Date' => 'Data',
-];
+
+    ];

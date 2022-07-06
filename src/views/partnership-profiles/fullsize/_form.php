@@ -50,6 +50,8 @@ $idTabAttachments = 'tab-attachments';
 $partnershipProfileDateId = Html::getInputId($model, 'partnership_profile_date');
 $expirationInMonthsId = Html::getInputId($model, 'expiration_in_months');
 $calculatedExpiryDateId = 'calculated-expiry-date-id';
+$appController = Yii::$app->controller;
+
 
 $js = "
     function calcEndDateHour() {
@@ -469,7 +471,7 @@ $enabledTabs = !empty($module->fieldsCommunityConfigurations[$communityConfigura
         'workflowId' => PartnershipProfiles::PARTNERSHIP_PROFILES_WORKFLOW,
         'viewWidgetOnNewRecord' => true,
         //'closeSaveButtonWidget' => CloseSaveButtonWidget::widget($config),
-        'closeButton' => Html::a(Module::t('amospartnershipprofiles', 'Annulla'), \Yii::$app->session->get('previousUrl'),
+        'closeButton' => Html::a(Module::t('amospartnershipprofiles', 'Annulla'), $appController->getFormCloseUrl(),
             ['class' => 'btn btn-secondary']),
         'initialStatusName' => "DRAFT",
         'initialStatus' => PartnershipProfiles::PARTNERSHIP_PROFILES_WORKFLOW_STATUS_DRAFT,
