@@ -92,7 +92,12 @@ $appController = Yii::$app->controller;
             $widgetParams['allowedPartnershipProfileIds'] = $ownInterestPartnershipProfileIds;
         }
         ?>
-        <?= ExpressYourInterestWidget::widget($widgetParams); ?>
+        <?php
+        if (!Yii::$app->user->isGuest) {
+            if (!Yii::$app->user->can('AUDIT_PROPOSTE')) { ?>
+                <?= ExpressYourInterestWidget::widget($widgetParams); ?>
+        <?php }
+        } ?>
         <?php if ($appController->viewCreateProjectGroupBtn($model)): ?>
             <div class="footer_sidebar col-xs-12 text-right">
                 <?= Html::a(Module::t('amospartnershipprofiles', 'Create project group'), ['/partnershipprofiles/partnership-profiles/create-project-group', 'id' => $model->id], ['class' => 'btn btn-navigation-primary']); ?>

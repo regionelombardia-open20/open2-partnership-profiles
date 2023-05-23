@@ -24,5 +24,5 @@ $facilitator_description = Module::t('amospartnershipprofiles', '#expression_of_
     <div class="description-facilitator">
         <?= $facilitator_description ?>
     </div>
-<?php endif; ?>
+<?php endif; 
 

@@ -52,20 +52,22 @@ $enableAutoOpenSearchPanel = !isset(\Yii::$app->params['enableAutoOpenSearchPane
         <?= $form->field($model, 'short_description')->textInput(['placeholder' => Module::t('amospartnershipprofiles', 'Search by short description')]) ?>
     </div>
 
-    <?php if (isset($moduleTag) && in_array(Module::instance()->model('PartnershipProfiles'), $moduleTag->modelsEnabled) && $moduleTag->behaviors): ?>
-        <div class="col-xs-12">
-            <?php
-            $params = \Yii::$app->request->getQueryParams();
-            echo \open20\amos\tag\widgets\TagWidget::widget([
-                'model' => $model,
-                'attribute' => 'tagValues',
-                'form' => $form,
-                'isSearch' => true,
-                'form_values' => isset($params[$model->formName()]['tagValues']) ? $params[$model->formName()]['tagValues'] : []
-            ]);
-            ?>
-        </div>
-    <?php endif; ?>
+    <?php if (!Yii::$app->user->isGuest) { ?>
+        <?php if (isset($moduleTag) && in_array(Module::instance()->model('PartnershipProfiles'), $moduleTag->modelsEnabled) && $moduleTag->behaviors): ?>
+            <div class="col-xs-12">
+                <?php
+                $params = \Yii::$app->request->getQueryParams();
+                echo \open20\amos\tag\widgets\TagWidget::widget([
+                    'model' => $model,
+                    'attribute' => 'tagValues',
+                    'form' => $form,
+                    'isSearch' => true,
+                    'form_values' => isset($params[$model->formName()]['tagValues']) ? $params[$model->formName()]['tagValues'] : []
+                ]);
+                ?>
+            </div>
+        <?php endif; ?>
+    <?php } ?>
 
     <div class="col-xs-12">
         <div class="pull-right">

@@ -580,6 +580,57 @@ class PartnershipProfilesSearch extends PartnershipProfiles implements SearchMod
      * @param array $params
      * @return ActiveQuery
      */
+    public function search2022Query($params)
+    {
+        $query = $this->baseSearch($params);
+        $query->andWhere(['OR',
+            ['AND',
+                ['>=', 'partnership_profiles.created_at', '2022-01-01'],
+                ['<=', 'partnership_profiles.created_at', '2022-12-31'],
+            ],
+            ['AND',
+                ['>=', 'partnership_profiles.updated_at', '2022-01-01'],
+                ['<=', 'partnership_profiles.updated_at', '2022-12-31'],
+            ]
+        ]);
+        $query->andWhere(['not in', 'status', [
+            PartnershipProfiles::PARTNERSHIP_PROFILES_WORKFLOW_STATUS_DRAFT,
+            PartnershipProfiles::PARTNERSHIP_PROFILES_WORKFLOW_STATUS_TOVALIDATE
+        ]]);
+
+        return $query;
+    }
+
+    /**
+     * @param array $params
+     * @return ActiveDataProvider
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\di\NotInstantiableException
+     */
+    public function search2022($params)
+    {
+        $query = $this->search2022Query($params);
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+        ]);
+
+        $this->notificationOff($query);
+        $dataProvider = $this->searchDefaultOrder($dataProvider);
+
+        if (!($this->load($params) && $this->validate())) {
+            return $dataProvider;
+        }
+
+        $this->baseFilter($query);
+
+        return $dataProvider;
+    }
+
+    /**
+     * @param array $params
+     * @return ActiveQuery
+     */
     public function searchForFacilitatorQuery($params)
     {
         $query = $this->baseSearch($params);

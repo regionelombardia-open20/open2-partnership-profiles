@@ -131,7 +131,7 @@ class ExpressionsOfInterestController extends \open20\amos\partnershipprofiles\c
      * @param int|null $partnership_profile_id
      * @return string
      */
-    private function baseListsAction($pageTitle, $setCurrentDashboard = true, $dataProvider,
+    private function baseListsAction($pageTitle, $setCurrentDashboard, $dataProvider,
                                      $partnership_profile_id = null, $child_of = null)
     {
         Url::remember();

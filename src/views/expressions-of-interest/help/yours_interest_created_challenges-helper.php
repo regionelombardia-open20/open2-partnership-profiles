@@ -17,4 +17,4 @@ if(!empty($label)) : ?>
     <div class="yours-interest-create-challenges">
         <?= $label ?>
     </div>
-<?php endif; ?>
+<?php endif; 

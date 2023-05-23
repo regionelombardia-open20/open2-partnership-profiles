@@ -33,12 +33,18 @@ use yii\widgets\DetailView;
 $this->title                   = strip_tags($model);
 $this->params['breadcrumbs'][] = ['label' => Module::t('amospartnershipprofiles', 'Partnership Profiles'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
+if (Yii::$app->user->can('AUDIT_PROPOSTE') || Yii::$app->user->isGuest) {
+    $this->params['forceBreadcrumbs'][] = ['label' => 'Proposte dalla piattaforma 2022', 'url' => ['2022']];
+    $this->params['forceBreadcrumbs'][] = ['label' => $this->title];
+}
 $statesCounter                 = $model->getExpressionsOfInterestStatesCounter();
 
 /** @var PartnershipProfilesController $appController */
 $appController = Yii::$app->controller;
 
-$ownInterestPartnershipProfileIds = $appController->getOwnInterestPartnershipProfiles(true);
+if (!Yii::$app->user->isGuest) {
+    $ownInterestPartnershipProfileIds = $appController->getOwnInterestPartnershipProfiles(true);
+}
 
 // Tab ids
 $idTabCard            = 'tab-card';

@@ -195,6 +195,14 @@ class PartnershipProfilesController extends \open20\amos\partnershipprofiles\con
                         [
                             'allow' => true,
                             'actions' => [
+                                '2022',
+                                'view'
+                            ],
+                            //'roles' => ['AUDIT_PROPOSTE']
+                        ],
+                        [
+                            'allow' => true,
+                            'actions' => [
                                 'created-by',
                                 'associate-facilitator',
                                 'annulla-m2m',
@@ -322,8 +330,8 @@ class PartnershipProfilesController extends \open20\amos\partnershipprofiles\con
 
         Yii::$app->view->params['textHelp']['filename'] = 'partnership_dashboard_description';
 
-        $this->setTitleAndBreadcrumbs($pageTitle);
-        $this->setListViewsParams($setCurrentDashboard, $hideCreateNewBtn, $child_of);
+        $this->setTitleAndBreadcrumbs('');
+        $this->setListViewsParams(false);
         $this->setCurrentView($this->getAvailableView($currentView));
 
 
@@ -372,6 +380,24 @@ class PartnershipProfilesController extends \open20\amos\partnershipprofiles\con
         }
         $this->setDataProvider($this->modelSearch->searchArchived(Yii::$app->request->getQueryParams()));
         return $this->baseListsAction('Archived', $currentView);
+    }
+
+    /**
+     * ACTION TEMPORANEA PER AUDIT
+     * Proposte di collaborazione dalla piattaforma create o aggiornate nel 2022
+     * @param string|null $currentView
+     * @return string
+     */
+    public function action2022($currentView = null)
+    {
+        $this->view->params['titleSection'] = Module::t('amospartnershipprofiles', 'Proposte dalla piattaforma 2022');
+        $this->view->params['subTitleSection'] = 'Proposte di collaborazione dalla piattaforma create o aggiornate nel 2022';
+        $this->view->params['hideCreate'] = true;
+        $this->view->params['labelLinkAll'] = null;
+        $this->view->params['urlLinkAll'] = null;
+        $this->setDataProvider($this->modelSearch->search2022(Yii::$app->request->getQueryParams()));
+
+        return $this->baseListsAction('2022', $currentView);
     }
 
     /**
@@ -703,6 +729,10 @@ class PartnershipProfilesController extends \open20\amos\partnershipprofiles\con
             ];
         }
 
-        return $links;
+        if (!Yii::$app->user->can('AUDIT_PROPOSTE')) {
+            return $links;
+        } else {
+            return null;
+        }
     }
 }

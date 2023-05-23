@@ -67,9 +67,9 @@ class PartnershipProfilesCategory extends \open20\amos\partnershipprofiles\model
     }
 
 
-    public static function getEditFields()
+    public function getEditFields()
     {
-        $labels = self::attributeLabels();
+        $labels = $this->attributeLabels();
 
         return [
             [

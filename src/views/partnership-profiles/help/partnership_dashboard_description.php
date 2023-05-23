@@ -18,5 +18,5 @@ $description = Module::t('amospartnershipprofiles', '#partnership_profiles_dashb
     <div class="dashboard-description">
         <?= $description ?>
     </div>
-<?php endif; ?>
+<?php endif;
 
